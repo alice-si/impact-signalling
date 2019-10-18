@@ -3,7 +3,7 @@
     <md-app-toolbar class="md-primary">
       <span class="md-title">Social Impact Signalling</span>
       <div class="md-toolbar-section-end">
-        Connected to {{this.$store.state.ethers.network}}
+        Balance:  {{this.$store.state.gnosis.sTokenBalance}}
       </div>
     </md-app-toolbar>
 
@@ -17,8 +17,9 @@
       <md-card-content>
 
         <md-button class="md-raised md-primary" v-on:click="deploy()">Deploy</md-button>
-        <md-button class="md-raised md-primary" v-on:click="clearTable()">Clear table</md-button>
+        <md-button class="md-raised md-primary" v-on:click="getTokens()">Get tokens</md-button>
         <br />
+        Signalling Token: {{this.$store.state.gnosis.sToken}} <br/>
         PMS: {{this.$store.state.gnosis.pms}}
 
       </md-card-content>
@@ -41,11 +42,14 @@
     methods: {
       deploy: function() {
         console.log("Deploying...");
-        this.$store.dispatch('gnosis/deployPms');
+        this.$store.dispatch('gnosis/deploySignallingToken');
       },
-      clearTable: function() {
-        this.contacts.splice(0, this.contacts.length);
+      getTokens: function() {
+        this.$store.dispatch('gnosis/getSignallingTokens', 10);
       }
+    },
+    mounted: function () {
+      this.$store.dispatch('gnosis/initContracts');
     }
   }
 </script>

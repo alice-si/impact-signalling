@@ -5,6 +5,7 @@ import mutations from './mutations';
 
 const state = () => ({
   pms: null,
+  sTokenBalance: 0
 });
 
 export default {
