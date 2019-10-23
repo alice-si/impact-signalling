@@ -16,11 +16,40 @@
       </md-card-header>
       <md-card-content>
 
-        <md-button class="md-raised md-primary" v-on:click="deploy()">Deploy</md-button>
+
         <md-button class="md-raised md-primary" v-on:click="getTokens()">Get tokens</md-button>
         <br />
-        Signalling Token: {{this.$store.state.gnosis.sToken}} <br/>
-        PMS: {{this.$store.state.gnosis.pms}}
+        <md-table>
+          <md-table-row>
+            <md-table-head md-numeric>ID</md-table-head>
+            <md-table-head>Contract</md-table-head>
+            <md-table-head>Address</md-table-head>
+            <md-table-head>Action</md-table-head>
+          </md-table-row>
+
+          <md-table-row>
+            <md-table-cell md-numeric>1</md-table-cell>
+            <md-table-cell>Signalling token</md-table-cell>
+            <md-table-cell>{{this.$store.state.gnosis.sTokenAddress}}</md-table-cell>
+            <md-table-cell>
+              <md-button class="md-icon-button md-dense md-primary md-raised" v-on:click="deployToken()">
+                <md-icon>cloud_upload</md-icon>
+              </md-button>
+            </md-table-cell>
+          </md-table-row>
+
+          <md-table-row>
+            <md-table-cell md-numeric>2</md-table-cell>
+            <md-table-cell>Conditional Tokens</md-table-cell>
+            <md-table-cell>{{this.$store.state.gnosis.conditionalTokensAddress}}</md-table-cell>
+            <md-table-cell>
+              <md-button class="md-icon-button md-dense md-primary md-raised" v-on:click="deployConditionalTokens()">
+                <md-icon>cloud_upload</md-icon>
+              </md-button>
+            </md-table-cell>
+          </md-table-row>
+
+        </md-table>
 
       </md-card-content>
     </md-card>
@@ -40,9 +69,11 @@
       }
     },
     methods: {
-      deploy: function() {
-        console.log("Deploying...");
+      deployToken: function() {
         this.$store.dispatch('gnosis/deploySignallingToken');
+      },
+      deployConditionalTokens: function() {
+        this.$store.dispatch('gnosis/deployConditionalTokens');
       },
       getTokens: function() {
         this.$store.dispatch('gnosis/getSignallingTokens', 10);

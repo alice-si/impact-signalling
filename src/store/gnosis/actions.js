@@ -1,6 +1,7 @@
 /* eslint-disable */
 import {
   deploySignallingToken,
+  deployConditionalTokens,
   getTokens,
   initContracts
 } from './contracts';
@@ -12,6 +13,10 @@ export default {
 
   async deploySignallingToken(ctx) {
     await deploySignallingToken();
+  },
+
+  async deployConditionalTokens(ctx) {
+    await deployConditionalTokens();
   },
 
   async getSignallingTokens(ctx, amount) {

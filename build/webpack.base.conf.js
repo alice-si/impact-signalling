@@ -27,7 +27,8 @@ module.exports = {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
-      '@contracts' : resolve('build/contracts')
+      '@contracts' : resolve('build/contracts'),
+      '@gnosis-contracts' : resolve('node_modules/@gnosis.pm')
     }
   },
   module: {

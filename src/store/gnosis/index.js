@@ -4,7 +4,8 @@ import actions from './actions';
 import mutations from './mutations';
 
 const state = () => ({
-  pms: null,
+  conditionalTokensAddress: null,
+  sTokenAddress: null,
   sTokenBalance: 0
 });
 
