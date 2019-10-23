@@ -29,10 +29,10 @@
 
           <md-table-row>
             <md-table-cell md-numeric>1</md-table-cell>
-            <md-table-cell>Signalling token</md-table-cell>
-            <md-table-cell>{{this.$store.state.gnosis.sTokenAddress}}</md-table-cell>
+            <md-table-cell>Signalling orchestrator</md-table-cell>
+            <md-table-cell>{{this.$store.state.gnosis.orchestratorAddress}}</md-table-cell>
             <md-table-cell>
-              <md-button class="md-icon-button md-dense md-primary md-raised" v-on:click="deployToken()">
+              <md-button class="md-icon-button md-dense md-primary md-raised" v-on:click="deployOrchestrator()">
                 <md-icon>cloud_upload</md-icon>
               </md-button>
             </md-table-cell>
@@ -40,13 +40,14 @@
 
           <md-table-row>
             <md-table-cell md-numeric>2</md-table-cell>
-            <md-table-cell>Conditional Tokens</md-table-cell>
-            <md-table-cell>{{this.$store.state.gnosis.conditionalTokensAddress}}</md-table-cell>
-            <md-table-cell>
-              <md-button class="md-icon-button md-dense md-primary md-raised" v-on:click="deployConditionalTokens()">
-                <md-icon>cloud_upload</md-icon>
-              </md-button>
-            </md-table-cell>
+            <md-table-cell>Collateral token</md-table-cell>
+            <md-table-cell>{{this.$store.state.gnosis.collateralAddress}}</md-table-cell>
+          </md-table-row>
+
+          <md-table-row>
+            <md-table-cell md-numeric>3</md-table-cell>
+            <md-table-cell>Whitelist</md-table-cell>
+            <md-table-cell>{{this.$store.state.gnosis.whitelistAddress}}</md-table-cell>
           </md-table-row>
 
         </md-table>
@@ -72,8 +73,8 @@
       deployToken: function() {
         this.$store.dispatch('gnosis/deploySignallingToken');
       },
-      deployConditionalTokens: function() {
-        this.$store.dispatch('gnosis/deployConditionalTokens');
+      deployOrchestrator: function() {
+        this.$store.dispatch('gnosis/deployOrchestrator');
       },
       getTokens: function() {
         this.$store.dispatch('gnosis/getSignallingTokens', 10);

@@ -10,7 +10,7 @@ import './CollateralToken.sol';
 contract SignallingOrchestrator is Ownable {
 
     ConditionalTokens conditionalTokens;
-    Whitelist whitelist;
+    Whitelist public whitelist;
     CollateralToken public collateralToken;
     LMSRMarketMakerFactory marketMakerFactory;
     address public oracle;

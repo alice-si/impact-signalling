@@ -1,7 +1,11 @@
 import S_TOKEN_JSON from '@contracts/SignallingToken.json'
 import CONDITIONAL_TOKENS_JSON from '@gnosis-contracts/conditional-tokens-contracts/build/contracts/ConditionalTokens'
 import WHITELIST_JSON from '@gnosis-contracts/conditional-tokens-contracts/build/contracts/ConditionalTokens'
+import ORCHESTRATOR_JSON from '@contracts/SignallingOrchestrator.json'
+import COLLATERAL_JSON from '@contracts/CollateralToken.json'
 const ethers = require('ethers');
+
+const MARKET_MAKER_FACTORY = '0x51f7B16705845181df7c36F084ad4265B878AD0c';
 
 import {
   MSGS,
@@ -12,7 +16,7 @@ import {
   getWalletAddress,
 } from '../ethers/ethersConnect';
 
-var commit, sToken, conditionalTokens;
+var commit, sToken, orchestrator, collateral, whitelist;
 
 var linkContract = function(json, provider) {
   let c = Contract(json);
@@ -29,14 +33,18 @@ export async function deploySignallingToken() {
   console.log("Signalling token deployed to: " + sToken.address);
 }
 
-export async function deployConditionalTokens() {
+export async function deployOrchestrator() {
   let wallet = await getWallet();
-  let factory = new ethers.ContractFactory(CONDITIONAL_TOKENS_JSON.abi, CONDITIONAL_TOKENS_JSON.bytecode, wallet);
-  conditionalTokens = await factory.deploy();
-  localStorage.conditionalTokensAddress = conditionalTokens.address;
-  commit('conditionalTokensAddress', conditionalTokens.address);
-  console.log("Conditional tokens deployed to: " + conditionalTokens.address);
+  let address = await wallet.getAddress();
+  let factory = new ethers.ContractFactory(ORCHESTRATOR_JSON.abi, ORCHESTRATOR_JSON.bytecode, wallet);
+  orchestrator = await factory.deploy(address);
+  //Connect to Market Maker factory
+  await orchestrator.setMarketMakerFactory(MARKET_MAKER_FACTORY);
+  localStorage.orchestratorAddress = orchestrator.address;
+  commit('orchestratorAddress', orchestrator.address);
+  console.log("Signalling Orchestrator deployed to: " + orchestrator.address);
 }
+
 
 export async function getTokens(amount) {
   let wallet = await getWallet();
@@ -77,10 +85,25 @@ var linkContracts = async function() {
     });
   }
 
-  if (localStorage.conditionalTokensAddress) {
-    conditionalTokens = new ethers.Contract(localStorage.conditionalTokensAddress, CONDITIONAL_TOKENS_JSON.abi, wallet);
-    commit('conditionalTokensAddress', conditionalTokens.address);
-    console.log("Linking Conditional Tokens: " + conditionalTokens.address);
+  if (localStorage.orchestratorAddress) {
+    //Orchestrator
+    orchestrator = new ethers.Contract(localStorage.orchestratorAddress, ORCHESTRATOR_JSON.abi, wallet);
+    commit('orchestratorAddress', orchestrator.address);
+    console.log("Signalling Orchestrator linked: " + orchestrator.address);
+
+    //Collateral
+    let collateralAddress = await orchestrator.collateralToken();
+    collateral = new ethers.Contract(collateralAddress, COLLATERAL_JSON.abi, wallet);
+    commit('collateralAddress', collateral.address);
+    console.log("Collateral token linked: " + collateral.address);
+
+    //Collateral
+    let whitelistAddress = await orchestrator.whitelist();
+    whitelist = new ethers.Contract(whitelistAddress, WHITELIST_JSON.abi, wallet);
+    commit('whitelistAddress', whitelist.address);
+    console.log("Whitelist linked: " + whitelist.address);
+
+
   }
 
 

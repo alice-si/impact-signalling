@@ -4,7 +4,9 @@ import actions from './actions';
 import mutations from './mutations';
 
 const state = () => ({
-  conditionalTokensAddress: null,
+  orchestratorAddress: null,
+  collateralAddress: null,
+  whitelistAddress: null,
   sTokenAddress: null,
   sTokenBalance: 0
 });
