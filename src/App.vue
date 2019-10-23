@@ -2,97 +2,59 @@
   <md-app>
     <md-app-toolbar class="md-primary">
       <span class="md-title">Social Impact Signalling</span>
+
+
+      <div class="md-toolbar-row">
+
+        <!--<md-tabs class="md-primary" md-sync-route>-->
+          <!--<md-tab id="tab-home" md-label="Home" to="/" exact></md-tab>-->
+          <!--<md-tab id="tab-admin" md-label="Admin" to="/admin" exact></md-tab>-->
+        <!--</md-tabs>-->
+
+        <md-tabs class="md-primary" md-sync-route>
+          <md-tab v-for="route in $router.options.routes"
+                  :key="route.path"
+                  v-if="route.path != '*'"
+                  :to="route.path"
+
+                  :md-label="route.name"
+          exact>
+
+          </md-tab>
+        </md-tabs>
+
+      </div>
+
       <div class="md-toolbar-section-end">
         Balance:  {{this.$store.state.gnosis.sTokenBalance}}
       </div>
     </md-app-toolbar>
 
     <md-app-content>
+      <router-view></router-view>
 
-    <md-card>
-      <md-card-header>
-        <div class="md-title">Smart prediction markets</div>
-        <div class="md-subhead">by Alice</div>
-      </md-card-header>
-      <md-card-content>
-
-
-        <md-button class="md-raised md-primary" v-on:click="getTokens()">Get tokens</md-button>
-        <br />
-        <md-table>
-          <md-table-row>
-            <md-table-head md-numeric>ID</md-table-head>
-            <md-table-head>Contract</md-table-head>
-            <md-table-head>Address</md-table-head>
-            <md-table-head>Action</md-table-head>
-          </md-table-row>
-
-          <md-table-row>
-            <md-table-cell md-numeric>1</md-table-cell>
-            <md-table-cell>Signalling orchestrator</md-table-cell>
-            <md-table-cell>{{this.$store.state.gnosis.orchestratorAddress}}</md-table-cell>
-            <md-table-cell>
-              <md-button class="md-icon-button md-dense md-primary md-raised" v-on:click="deployOrchestrator()">
-                <md-icon>cloud_upload</md-icon>
-              </md-button>
-            </md-table-cell>
-          </md-table-row>
-
-          <md-table-row>
-            <md-table-cell md-numeric>2</md-table-cell>
-            <md-table-cell>Collateral token</md-table-cell>
-            <md-table-cell>{{this.$store.state.gnosis.collateralAddress}}</md-table-cell>
-          </md-table-row>
-
-          <md-table-row>
-            <md-table-cell md-numeric>3</md-table-cell>
-            <md-table-cell>Whitelist</md-table-cell>
-            <md-table-cell>{{this.$store.state.gnosis.whitelistAddress}}</md-table-cell>
-          </md-table-row>
-
-        </md-table>
-
-      </md-card-content>
-    </md-card>
     </md-app-content>
   </md-app>
 </template>
 
+
+
 <script>
-  import { mapState } from 'vuex';
-
-  export default {
-    name: 'app',
-
-    data: function () {
-      return {
-        contacts: []
-      }
-    },
-    methods: {
-      deployToken: function() {
-        this.$store.dispatch('gnosis/deploySignallingToken');
-      },
-      deployOrchestrator: function() {
-        this.$store.dispatch('gnosis/deployOrchestrator');
-      },
-      getTokens: function() {
-        this.$store.dispatch('gnosis/getSignallingTokens', 10);
-      }
-    },
-    mounted: function () {
-      this.$store.dispatch('gnosis/initContracts');
-    }
-  }
+  export default {};
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  #app {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    margin-top: 60px;
+  }
+
+  .md-toolbar-row {
+    width: auto;
+  }
 </style>
+
