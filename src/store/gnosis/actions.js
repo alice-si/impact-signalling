@@ -1,8 +1,7 @@
 /* eslint-disable */
 import {
-  deploySignallingToken,
+  onBoardUser,
   deployOrchestrator,
-  getTokens,
   initContracts
 } from './contracts';
 
@@ -11,19 +10,11 @@ export default {
     initContracts(ctx);
   },
 
-  async deploySignallingToken(ctx) {
-    await deploySignallingToken();
-  },
-
   async deployOrchestrator(ctx) {
     await deployOrchestrator();
   },
 
-  async getSignallingTokens(ctx, amount) {
-    await getTokens(amount);
-  },
-
-  async deployPms(ctx) {
-    ctx.commit('pms', 'DEPLOYED');
+  async addUser(ctx, newUser) {
+    onBoardUser(newUser);
   }
 }

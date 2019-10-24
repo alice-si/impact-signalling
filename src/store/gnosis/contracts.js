@@ -16,22 +16,14 @@ import {
   getWalletAddress,
 } from '../ethers/ethersConnect';
 
-var commit, sToken, orchestrator, collateral, whitelist;
+var commit, state;
+var sToken, orchestrator, collateral, whitelist;
 
 var linkContract = function(json, provider) {
   let c = Contract(json);
   c.setProvider(provider);
   return c;
 };
-
-export async function deploySignallingToken() {
-  let wallet = await getWallet();
-  let factory = new ethers.ContractFactory(S_TOKEN_JSON.abi, S_TOKEN_JSON.bytecode, wallet);
-  sToken = await factory.deploy();
-  localStorage.sTokenAddress = sToken.address;
-  commit('sTokenAddress', sToken.address);
-  console.log("Signalling token deployed to: " + sToken.address);
-}
 
 export async function deployOrchestrator() {
   let wallet = await getWallet();
@@ -45,6 +37,13 @@ export async function deployOrchestrator() {
   console.log("Signalling Orchestrator deployed to: " + orchestrator.address);
 }
 
+export async function onBoardUser(newUser) {
+  await orchestrator.onBoard(newUser.address, newUser.tokens);
+  commit('addUser', newUser);
+  console.log("Adderd new user: " + newUser.address);
+  localStorage.users = JSON.stringify(state.users);
+}
+
 
 export async function getTokens(amount) {
   let wallet = await getWallet();
@@ -55,6 +54,7 @@ export async function getTokens(amount) {
 }
 
 export async function initContracts(_ctx) {
+  state = _ctx.state;
   commit = _ctx.commit;
   event.$on(EVENT_CHANNEL, async function (msg) {
     if (msg === MSGS.ETHERS_VUEX_READY) {
@@ -74,17 +74,6 @@ var updateBalance = async function() {
 var linkContracts = async function() {
   let wallet = await getWallet();
 
-  if (localStorage.sTokenAddress) {
-    sToken = new ethers.Contract(localStorage.sTokenAddress, S_TOKEN_JSON.abi, wallet);
-    commit('sTokenAddress', sToken.address);
-    console.log("Linking sToken: " + sToken.address);
-    updateBalance();
-    sToken.on("Transfer", (from, to, value) => {
-      console.log("Signalling token transfer from: " + from + " to: " + to +  " value: " + value);
-      updateBalance();
-    });
-  }
-
   if (localStorage.orchestratorAddress) {
     //Orchestrator
     orchestrator = new ethers.Contract(localStorage.orchestratorAddress, ORCHESTRATOR_JSON.abi, wallet);
@@ -103,6 +92,11 @@ var linkContracts = async function() {
     commit('whitelistAddress', whitelist.address);
     console.log("Whitelist linked: " + whitelist.address);
 
+    //Users
+    if (localStorage.users) {
+      console.log(localStorage.users);
+      state.users = JSON.parse(localStorage.users);
+    }
 
   }
 

@@ -8,7 +8,7 @@ const state = () => ({
   collateralAddress: null,
   whitelistAddress: null,
   sTokenAddress: null,
-  sTokenBalance: 0
+  users: []
 });
 
 export default {

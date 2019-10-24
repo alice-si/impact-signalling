@@ -26,7 +26,7 @@
       </div>
 
       <div class="md-toolbar-section-end">
-        Balance:  {{this.$store.state.gnosis.sTokenBalance}}
+        Balance:  ???
       </div>
     </md-app-toolbar>
 

@@ -9,10 +9,7 @@ export default {
   whitelistAddress: function (state, value) {
     state.whitelistAddress = value;
   },
-  sTokenBalance: function (state, value) {
-    state.sTokenBalance = value;
-  },
-  sTokenAddress: function (state, value) {
-    state.sTokenAddress = value;
+  addUser: function (state, newUser) {
+    state.users.push(newUser);
   }
 }
