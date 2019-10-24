@@ -67,9 +67,6 @@
       getTokens: function() {
         this.$store.dispatch('gnosis/getSignallingTokens', 10);
       }
-    },
-    mounted: function () {
-      this.$store.dispatch('gnosis/initContracts');
     }
   }
 </script>

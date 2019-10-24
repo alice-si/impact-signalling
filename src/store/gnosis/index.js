@@ -8,7 +8,8 @@ const state = () => ({
   collateralAddress: null,
   whitelistAddress: null,
   sTokenAddress: null,
-  users: []
+  users: [],
+  markets: []
 });
 
 export default {

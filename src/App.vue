@@ -40,7 +40,11 @@
 
 
 <script>
-  export default {};
+  export default {
+    mounted: function () {
+      this.$store.dispatch('gnosis/initContracts');
+    }
+  }
 </script>
 
 <style>

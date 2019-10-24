@@ -5,7 +5,7 @@ import ORCHESTRATOR_JSON from '@contracts/SignallingOrchestrator.json'
 import COLLATERAL_JSON from '@contracts/CollateralToken.json'
 const ethers = require('ethers');
 
-const MARKET_MAKER_FACTORY = '0x51f7B16705845181df7c36F084ad4265B878AD0c';
+const MARKET_MAKER_FACTORY = '0xc0073D1F564098444419E43Eaf3fDB3bb7633eF0';
 
 import {
   MSGS,
@@ -19,11 +19,7 @@ import {
 var commit, state;
 var sToken, orchestrator, collateral, whitelist;
 
-var linkContract = function(json, provider) {
-  let c = Contract(json);
-  c.setProvider(provider);
-  return c;
-};
+const HUNDRED = ethers.utils.parseEther("100");
 
 export async function deployOrchestrator() {
   let wallet = await getWallet();
@@ -42,6 +38,21 @@ export async function onBoardUser(newUser) {
   commit('addUser', newUser);
   console.log("Adderd new user: " + newUser.address);
   localStorage.users = JSON.stringify(state.users);
+}
+
+export async function createMarket(newMarket) {
+  let b32 = ethers.utils.formatBytes32String(newMarket.project);
+  console.log(b32);
+  console.log(HUNDRED);
+  let tx = await orchestrator.createMarket(ethers.utils.formatBytes32String(newMarket.project), HUNDRED, {gasLimit: 1000000});
+
+  let receipt = await getProvider().getTransactionReceipt(tx.hash);
+  newMarket.address = getMarketIdFromTx(receipt);
+  newMarket.ratio = 50;
+
+  commit('addMarket', newMarket);
+  console.log("Adderd market: " + newMarket.address);
+  localStorage.markets = JSON.stringify(state.markets);
 }
 
 
@@ -71,6 +82,17 @@ var updateBalance = async function() {
   commit('sTokenBalance', balance.valueOf());
 };
 
+var getMarketIdFromTx = function(tx) {
+  console.log(tx);
+  for(var i=0; i < tx.logs.length; i++) {
+    if (tx.logs[i].address === MARKET_MAKER_FACTORY) {
+      let id = '0x' + tx.logs[i].data.substring(26, 66);
+      return id;
+    }
+  }
+  return null;
+}
+
 var linkContracts = async function() {
   let wallet = await getWallet();
 
@@ -96,6 +118,11 @@ var linkContracts = async function() {
     if (localStorage.users) {
       console.log(localStorage.users);
       state.users = JSON.parse(localStorage.users);
+    }
+
+    if (localStorage.markets) {
+      console.log(localStorage.markets);
+      state.markets = JSON.parse(localStorage.markets);
     }
 
   }

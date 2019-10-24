@@ -11,5 +11,8 @@ export default {
   },
   addUser: function (state, newUser) {
     state.users.push(newUser);
+  },
+  addMarket: function (state, newMarket) {
+    state.markets.push(newMarket);
   }
 }

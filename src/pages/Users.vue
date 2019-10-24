@@ -4,7 +4,7 @@
       <md-card>
         <md-card-header>
           <div class="md-title">Registered users</div>
-          <div class="md-subhead">Allowed to trade on impact prediction markets</div>
+          <div class="md-subhead">allowed to trade on impact prediction markets</div>
         </md-card-header>
         <md-card-content>
 
@@ -70,8 +70,6 @@
 
 
 <script>
-  import {mapState} from 'vuex';
-
   export default {
     name: 'users',
 
@@ -90,9 +88,6 @@
         this.showAddPanel = false;
         this.newUser = {tokens: 10};
       }
-    },
-    mounted: function () {
-      this.$store.dispatch('gnosis/initContracts');
     }
   }
 </script>

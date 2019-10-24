@@ -1,6 +1,7 @@
 /* eslint-disable */
 import {
   onBoardUser,
+  createMarket,
   deployOrchestrator,
   initContracts
 } from './contracts';
@@ -15,6 +16,10 @@ export default {
   },
 
   async addUser(ctx, newUser) {
-    onBoardUser(newUser);
-  }
+    await onBoardUser(newUser);
+  },
+
+  async addMarket(ctx, newMarket) {
+    await createMarket(newMarket);
+  },
 }
