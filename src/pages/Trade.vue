@@ -6,59 +6,44 @@
 
           {{market.address}}
 
-          <md-button @click="joinMarket(market)" class="md-icon-button md-dense md-raised md-primary">
-            <md-icon>vpn_key</md-icon>
-          </md-button>
+          <span class="card-buttons">
+            <md-card-expand-trigger v-if="market.allowance > 0">
+              <md-button class="md-icon-button">
+                <md-icon>keyboard_arrow_down</md-icon>
+              </md-button>
+            </md-card-expand-trigger>
 
-          <md-button @click="buy(market)" class="md-icon-button md-dense md-raised md-primary">
-            <md-icon>add</md-icon>
-          </md-button>
+            <md-button @click="joinMarket(market)" class="md-icon-button md-dense" v-else>
+              <md-icon>vpn_key</md-icon>
+              <md-tooltip md-direction="right">Join market</md-tooltip>
+            </md-button>
+          </span>
 
         </md-card-content>
+
+        <md-card-expand>
+
+
+
+          <md-card-expand-content>
+            <md-card-content>
+              <md-button @click="buy(market)" class="md-icon-button md-dense md-raised md-primary">
+                <md-icon>add</md-icon>
+              </md-button>
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio itaque ea, nostrum odio. Dolores, sed accusantium quasi non, voluptas eius illo quas, saepe voluptate pariatur in deleniti minus sint. Excepturi.
+            </md-card-content>
+          </md-card-expand-content>
+        </md-card-expand>
+
+
       </md-card>
     </md-content>
-
-    <md-drawer class="md-drawer md-right" :md-active.sync="showAddPanel" md-swipeable>
-      <md-toolbar class="md-primary" >
-        <span class="md-title">Add market</span>
-      </md-toolbar>
-
-
-      <div class="form">
-        <div class="md-layout-item md-small-size-100">
-          <md-field>
-            <label for="project">Project</label>
-            <md-input name="project" id="project" v-model="newMarket.project" :disabled="sending" />
-          </md-field>
-        </div>
-
-        <div class="md-layout-item md-small-size-100">
-          <md-field>
-            <label for="address">Ethereum address</label>
-            <md-input name="address" id="address" v-model="newMarket.address" :disabled="sending" />
-          </md-field>
-        </div>
-
-        <div class="md-layout-item md-small-size-100">
-          <md-field>
-            <label for="tokens">Tokens</label>
-            <md-input name="tokens" id="tokens" v-model="newMarket.tokens" :disabled="sending" />
-          </md-field>
-        </div>
-
-        <md-button class="md-primary" @click="deployMarket()">Deploy Market</md-button>
-      </div>
-
-
-    </md-drawer>
 
   </div>
 </template>
 
 
 <script>
-  import {mapState} from 'vuex';
-
   export default {
     name: 'Trade',
 
@@ -95,8 +80,17 @@
     height: 400px;
   }
 
-  .form {
-    padding: 20px;
+  .md-card {
+    margin-top: 20px;
+  }
+
+  .md-card-content {
+    line-height: 40px !important;
+    padding: 10px !important;
+  }
+
+  .card-buttons {
+    float: right;
   }
 
 </style>

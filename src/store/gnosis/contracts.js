@@ -109,6 +109,7 @@ var getMarketIdFromTx = function(tx) {
 
 var linkContracts = async function() {
   let wallet = await getWallet();
+  let address = await wallet.getAddress();
 
   if (localStorage.orchestratorAddress) {
     //Orchestrator
@@ -137,6 +138,11 @@ var linkContracts = async function() {
     if (localStorage.markets) {
       console.log(localStorage.markets);
       state.markets = JSON.parse(localStorage.markets);
+      state.markets.forEach(async (market) => {
+        let allowance = await collateral.allowance(address, market.address);
+        market.allowance = ethers.utils.formatEther(allowance);
+        console.log(market.allowance > 0);
+      });
     }
 
     await updateBalance();
