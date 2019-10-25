@@ -8,7 +8,6 @@
         </md-card-header>
         <md-card-content>
 
-
           <md-table>
             <md-table-row>
               <md-table-head md-numeric>ID</md-table-head>
@@ -34,7 +33,7 @@
     </md-content>
 
     <md-drawer class="md-drawer md-right" :md-active.sync="showAddPanel" md-swipeable>
-      <md-toolbar class="md-primary" >
+      <md-toolbar class="md-primary">
         <span class="md-title">Add market</span>
       </md-toolbar>
 
@@ -43,21 +42,21 @@
         <div class="md-layout-item md-small-size-100">
           <md-field>
             <label for="project">Project</label>
-            <md-input name="project" id="project" v-model="newMarket.project" :disabled="sending" />
+            <md-input name="project" id="project" v-model="newMarket.project" :disabled="sending"/>
           </md-field>
         </div>
 
         <div class="md-layout-item md-small-size-100">
           <md-field>
             <label for="address">Ethereum address</label>
-            <md-input name="address" id="address" v-model="newMarket.address" :disabled="sending" />
+            <md-input name="address" id="address" v-model="newMarket.address" :disabled="sending"/>
           </md-field>
         </div>
 
         <div class="md-layout-item md-small-size-100">
           <md-field>
             <label for="tokens">Tokens</label>
-            <md-input name="tokens" id="tokens" v-model="newMarket.tokens" :disabled="sending" />
+            <md-input name="tokens" id="tokens" v-model="newMarket.tokens" :disabled="sending"/>
           </md-field>
         </div>
 
@@ -72,19 +71,49 @@
 
 
 <script>
-  import {mapState} from 'vuex';
+  import {gql} from "apollo-boost";
+  import axios from 'axios'
+
+  let data = {
+    query: '{allProjects {title} }'
+  };
+
+  function sendQuery() {
+    $.post( "https://api.stage.alice.si/graphql", data).done(function( data ) {
+      console.log('Sent successfully');
+      console.log(data);
+      console.log('Hey :)');
+    });
+  }
 
   export default {
     name: 'Markets',
 
+    // apollo: {
+    //   // Simple query that will update the 'hello' vue property
+    //   projects: gql`{allProjects {title} }`,
+    // },
+
     data: () => ({
+
       newMarket: {},
       showAddPanel: false,
       sending: false
     }),
     methods: {
-      addMarket: function () {
-        this.showAddPanel = true;
+      addMarket: async function () {
+        //this.showAddPanel = true;
+
+        //APOLLO QUERY
+        //this.projects = await this.$apollo.query.projects;
+
+        //AXIOS QUERY
+        // axios.post('https://api.stage.alice.si/graphql/', {
+        //   query: '{allProjects {title} }'
+        // })
+
+        //JQUERY QUERY
+        sendQuery();
       },
       deployMarket: function () {
         this.$store.dispatch('gnosis/addMarket', JSON.parse(JSON.stringify(this.newMarket)));
