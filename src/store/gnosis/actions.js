@@ -3,7 +3,9 @@ import {
   onBoardUser,
   createMarket,
   deployOrchestrator,
-  initContracts
+  initContracts,
+  trade,
+  joinMarket
 } from './contracts';
 
 export default {
@@ -22,4 +24,12 @@ export default {
   async addMarket(ctx, newMarket) {
     await createMarket(newMarket);
   },
+
+  async joinMarket(ctx, market) {
+    await joinMarket(market);
+  },
+
+  async trade(ctx, market) {
+    await trade(market);
+  }
 }

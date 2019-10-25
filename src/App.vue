@@ -26,7 +26,7 @@
       </div>
 
       <div class="md-toolbar-section-end">
-        Balance:  ???
+        Balance:  {{$store.state.gnosis.collateralBalance}}
       </div>
     </md-app-toolbar>
 

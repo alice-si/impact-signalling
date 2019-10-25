@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/pages/HelloWorld'
+import Home from '@/pages/Home'
 import Admin from '@/pages/Admin'
 import Users from '@/pages/Users'
 import Markets from '@/pages/Markets'
+import Trade from '@/pages/Trade'
 
 Vue.use(Router);
 
@@ -12,7 +13,7 @@ export default new Router({
     {
       path: '/',
       name: 'Home',
-      component: HelloWorld
+      component: Home
     },
     {
       path: "/users",
@@ -32,6 +33,11 @@ export default new Router({
     {
       path: "/trade",
       name: "Trade",
+      component: Trade
+    },
+    {
+      path: "/admin",
+      name: "Admin",
       component: Admin
     },
   ]

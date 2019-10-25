@@ -1,11 +1,11 @@
-import S_TOKEN_JSON from '@contracts/SignallingToken.json'
 import CONDITIONAL_TOKENS_JSON from '@gnosis-contracts/conditional-tokens-contracts/build/contracts/ConditionalTokens'
 import WHITELIST_JSON from '@gnosis-contracts/conditional-tokens-contracts/build/contracts/ConditionalTokens'
 import ORCHESTRATOR_JSON from '@contracts/SignallingOrchestrator.json'
+import MM_JSON from '@contracts/MarketMaker.json'
 import COLLATERAL_JSON from '@contracts/CollateralToken.json'
 const ethers = require('ethers');
 
-const MARKET_MAKER_FACTORY = '0xc0073D1F564098444419E43Eaf3fDB3bb7633eF0';
+const MARKET_MAKER_FACTORY = '0xf95a0ec34288Baf9EEe70105575CdD60459b91D5';
 
 import {
   MSGS,
@@ -17,8 +17,9 @@ import {
 } from '../ethers/ethersConnect';
 
 var commit, state;
-var sToken, orchestrator, collateral, whitelist;
+var orchestrator, collateral, whitelist;
 
+const ONE = ethers.utils.parseEther("1");
 const HUNDRED = ethers.utils.parseEther("100");
 
 export async function deployOrchestrator() {
@@ -34,9 +35,10 @@ export async function deployOrchestrator() {
 }
 
 export async function onBoardUser(newUser) {
-  await orchestrator.onBoard(newUser.address, newUser.tokens);
+  let wei = ethers.utils.parseEther(newUser.tokens.toString());
+  await orchestrator.onBoard(newUser.address, wei);
   commit('addUser', newUser);
-  console.log("Adderd new user: " + newUser.address);
+  console.log("Added new user: " + newUser.address);
   localStorage.users = JSON.stringify(state.users);
 }
 
@@ -55,13 +57,25 @@ export async function createMarket(newMarket) {
   localStorage.markets = JSON.stringify(state.markets);
 }
 
+export async function joinMarket(market) {
+  await collateral.approve(market.address, HUNDRED, {gasLimit: 1000000});
+  console.log("Collateral approved for: " + market.address);
+}
 
-export async function getTokens(amount) {
+export async function trade(market) {
+  let wallet = await getWallet();
+  let mm = new ethers.Contract(market.address, MM_JSON.abi, wallet);
+  await mm.trade([ONE, 0], 0, {gasLimit: 1000000});
+  console.log("Traded on : " + market.address);
+}
+
+export async function mintTokens(amount) {
+  let wei = ethers.utils.parseEther(amount.toString());
   let wallet = await getWallet();
   let address = await wallet.getAddress();
-  await sToken.mint(address, amount);
+  await collateral.mint(address, wei);
 
-  console.log("Signalling tokens minted: " + amount);
+  console.log("Collateral tokens minted: " + amount);
 }
 
 export async function initContracts(_ctx) {
@@ -78,8 +92,8 @@ var updateBalance = async function() {
   let wallet = await getWallet();
   let address = await wallet.getAddress();
 
-  let balance = await sToken.balanceOf(address);
-  commit('sTokenBalance', balance.valueOf());
+  let balance = await collateral.balanceOf(address);
+  commit('collateralBalance', ethers.utils.formatEther(balance));
 };
 
 var getMarketIdFromTx = function(tx) {
@@ -124,6 +138,8 @@ var linkContracts = async function() {
       console.log(localStorage.markets);
       state.markets = JSON.parse(localStorage.markets);
     }
+
+    await updateBalance();
 
   }
 

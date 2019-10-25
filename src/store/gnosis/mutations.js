@@ -14,5 +14,8 @@ export default {
   },
   addMarket: function (state, newMarket) {
     state.markets.push(newMarket);
+  },
+  collateralBalance: function (state, value) {
+    state.collateralBalance = value;
   }
 }
