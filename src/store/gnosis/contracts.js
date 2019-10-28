@@ -1,8 +1,8 @@
 import CONDITIONAL_TOKENS_JSON from '@gnosis-contracts/conditional-tokens-contracts/build/contracts/ConditionalTokens'
 import WHITELIST_JSON from '@gnosis-contracts/conditional-tokens-contracts/build/contracts/ConditionalTokens'
-import ORCHESTRATOR_JSON from '@contracts/SignallingOrchestrator.json'
-import MM_JSON from '@contracts/MarketMaker.json'
-import COLLATERAL_JSON from '@contracts/CollateralToken.json'
+import ORCHESTRATOR_JSON from '@contracts/SignallingOrchestrator.sol'
+import MM_JSON from '@contracts/MarketMaker.sol'
+import COLLATERAL_JSON from '@contracts/CollateralToken.sol'
 const ethers = require('ethers');
 
 const MARKET_MAKER_FACTORY = '0x7837aA552989D8B1D91364D97c4a7002119C490D';
