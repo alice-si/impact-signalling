@@ -29,9 +29,9 @@
 
               <div style="margin-left:50px;">
                 <div style="float: left">
-                  <md-button class="buy-sell"> Buy @ 0.66</md-button>
+                  <md-button class="buy-sell"> Buy @ {{market.costBuyNo}}</md-button>
                   <br/>
-                  <md-button class="buy-sell"> Sell @ 0.44</md-button>
+                  <md-button class="buy-sell"> Sell @ {{market.costSellNo}}</md-button>
                 </div>
 
                 <md-badge class="md-primary" md-position="bottom" md-content="12" style="float:left;">
@@ -42,14 +42,14 @@
               </div>
 
               <span style="line-height: 60px;">
-                {{market.address}}
+                Address: <b>{{market.address}}</b>
               </span>
 
 
               <div style="float: right; margin-right: 50px;">
-                <md-button class="buy-sell"> Buy @ 0.66</md-button>
+                <md-button class="buy-sell"> Buy @ {{market.costBuyYes}}</md-button>
                 <br/>
-                <md-button class="buy-sell"> Sell @ 0.44</md-button>
+                <md-button class="buy-sell"> Sell @ {{market.costSellYes}}</md-button>
               </div>
 
               <md-badge class="md-primary" md-position="bottom" md-content="12" style="float:right;">
@@ -71,6 +71,10 @@
 
 
 <script>
+  import {
+    updateMarket
+  } from '../store/gnosis/contracts';
+
   export default {
     name: 'Trade',
 
@@ -83,6 +87,10 @@
       joinMarket: function (market) {
         console.log("Joining market: " + market.address);
         this.$store.dispatch('gnosis/joinMarket', market);
+      },
+      test: async function(market) {
+        console.log(market);
+        await updateMarket(market);
       },
 
       buy: function (market) {

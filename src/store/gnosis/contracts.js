@@ -20,6 +20,7 @@ var commit, state;
 var orchestrator, collateral, whitelist;
 
 const ONE = ethers.utils.parseEther("1");
+const MIN_ONE = ethers.utils.parseEther("-1");
 const HUNDRED = ethers.utils.parseEther("100");
 
 export async function deployOrchestrator() {
@@ -43,17 +44,41 @@ export async function onBoardUser(newUser) {
 }
 
 export async function createMarket(newMarket) {
-  let b32 = ethers.utils.formatBytes32String(newMarket.project);
-  console.log(b32);
-  console.log(HUNDRED);
-  let tx = await orchestrator.createMarket(ethers.utils.formatBytes32String(newMarket.project), HUNDRED, {gasLimit: 1000000});
+  let wallet = await getWallet();
+  newMarket.id = ethers.utils.id(newMarket.project+newMarket.outcome);
+  let tx = await orchestrator.createMarket(newMarket.id, HUNDRED, {gasLimit: 1000000});
 
   let receipt = await getProvider().getTransactionReceipt(tx.hash);
   newMarket.address = getMarketIdFromTx(receipt);
   newMarket.ratio = 50;
 
+  updateMarket(newMarket);
+
   commit('addMarket', newMarket);
   console.log("Adderd market: " + newMarket.address);
+  localStorage.markets = JSON.stringify(state.markets);
+}
+
+export async function updateMarket(market) {
+  let wallet = await getWallet();
+  let mm = new ethers.Contract(market.address, MM_JSON.abi, wallet);
+
+  //Prices
+  market.costBuyYes = Number.parseFloat(ethers.utils.formatEther(await mm.calcNetCost([ONE, 0]))).toPrecision(3);
+  market.costSellYes = (-Number.parseFloat(ethers.utils.formatEther(await mm.calcNetCost([MIN_ONE, 0])))).toPrecision(3);
+
+  market.costBuyNo = Number.parseFloat(ethers.utils.formatEther(await mm.calcNetCost([0, ONE]))).toPrecision(3);
+  market.costSellNo = (-Number.parseFloat(ethers.utils.formatEther(await mm.calcNetCost([0, MIN_ONE])))).toPrecision(3);
+
+
+  //Holdings
+  // let mm = new ethers.Contract(newMarket.address, MM_JSON.abi, wallet);
+  // market.yesPosition = await mm.generateAtomicPositionId(0);
+  // console.log("Yes: " + newMarket.yesPosition);
+
+
+
+  commit('updateMarket', market);
   localStorage.markets = JSON.stringify(state.markets);
 }
 
@@ -69,6 +94,7 @@ export async function trade(market) {
   let mm = new ethers.Contract(market.address, MM_JSON.abi, wallet);
   await mm.trade([ONE, 0], 0, {gasLimit: 1000000});
   console.log("Traded on : " + market.address);
+  await updateMarket(market);
 }
 
 export async function mintTokens(amount) {

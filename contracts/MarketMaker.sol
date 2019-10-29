@@ -252,7 +252,7 @@ contract MarketMaker is Ownable, ERC1155TokenReceiver {
     }
 
     function generateAtomicPositionId(uint i)
-        internal
+        public
         view
         returns (uint)
     {
