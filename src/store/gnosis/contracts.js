@@ -5,7 +5,7 @@ import MM_JSON from '@contracts/MarketMaker.json'
 import COLLATERAL_JSON from '@contracts/CollateralToken.json'
 const ethers = require('ethers');
 
-const MARKET_MAKER_FACTORY = '0x7837aA552989D8B1D91364D97c4a7002119C490D';
+const MARKET_MAKER_FACTORY = '0x2d6FB5b6C13d48176ED24a65c8b25C2D14995271';
 
 import {
   MSGS,
@@ -59,6 +59,8 @@ export async function createMarket(newMarket) {
 
 export async function joinMarket(market) {
   await collateral.approve(market.address, HUNDRED, {gasLimit: 1000000});
+  market.allowance = 100;
+  commit('updateMarket', market);
   console.log("Collateral approved for: " + market.address);
 }
 
@@ -141,7 +143,7 @@ var linkContracts = async function() {
       state.markets.forEach(async (market) => {
         let allowance = await collateral.allowance(address, market.address);
         market.allowance = ethers.utils.formatEther(allowance);
-        console.log(market.allowance > 0);
+        commit('updateMarket', market);
       });
     }
 

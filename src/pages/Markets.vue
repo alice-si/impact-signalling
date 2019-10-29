@@ -26,7 +26,9 @@
             </md-table-row>
           </md-table>
 
-          <md-button class="md-primary" @click="addMarket()">Add Market</md-button>
+          <div class="button-space">
+            <md-button class="md-primary" @click="addMarket()"> + Add Market</md-button>
+          </div>
 
         </md-card-content>
       </md-card>
@@ -42,25 +44,24 @@
         <div class="md-layout-item md-small-size-100">
           <md-field>
             <label for="project">Project</label>
-            <md-input name="project" id="project" v-model="newMarket.project" :disabled="sending"/>
+            <md-select v-model="selectedProject" name="project" id="project">
+              <md-option v-for="(p, index) in allProjects" :value="index">{{p.title}}</md-option>
+            </md-select>
           </md-field>
         </div>
 
         <div class="md-layout-item md-small-size-100">
-          <md-field>
-            <label for="address">Ethereum address</label>
-            <md-input name="address" id="address" v-model="newMarket.address" :disabled="sending"/>
+          <md-field v-if="selectedProject">
+            <label for="outcome">Outcome</label>
+            <md-select v-model="newMarket.outcome" name="outcome" id="outcome">
+              <md-option v-for="(o, index) in allProjects[selectedProject]._outcomes" :value="o.title">{{o.title}}</md-option>
+            </md-select>
           </md-field>
         </div>
 
-        <div class="md-layout-item md-small-size-100">
-          <md-field>
-            <label for="tokens">Tokens</label>
-            <md-input name="tokens" id="tokens" v-model="newMarket.tokens" :disabled="sending"/>
-          </md-field>
+        <div class="button-space">
+          <md-button class="md-primary md-raised" @click="deployMarket()">Deploy Market</md-button>
         </div>
-
-        <md-button class="md-primary" @click="deployMarket()">Deploy Market</md-button>
       </div>
 
 
@@ -72,50 +73,30 @@
 
 <script>
   import {gql} from "apollo-boost";
-  import axios from 'axios'
-
-  let data = {
-    query: '{allProjects {title} }'
-  };
-
-  function sendQuery() {
-    $.post( "https://api.stage.alice.si/graphql", data).done(function( data ) {
-      console.log('Sent successfully');
-      console.log(data);
-      console.log('Hey :)');
-    });
-  }
 
   export default {
     name: 'Markets',
 
-    // apollo: {
-    //   // Simple query that will update the 'hello' vue property
-    //   projects: gql`{allProjects {title} }`,
-    // },
+    apollo: {
+      // Simple query that will update the 'hello' vue property
+      allProjects: gql`{allProjects {title _outcomes {title} } }`,
+    },
 
     data: () => ({
-
       newMarket: {},
       showAddPanel: false,
-      sending: false
+      sending: false,
+      selectedProject: null,
     }),
+
     methods: {
       addMarket: async function () {
-        //this.showAddPanel = true;
+        this.showAddPanel = true;
 
-        //APOLLO QUERY
-        //this.projects = await this.$apollo.query.projects;
-
-        //AXIOS QUERY
-        // axios.post('https://api.stage.alice.si/graphql/', {
-        //   query: '{allProjects {title} }'
-        // })
-
-        //JQUERY QUERY
-        sendQuery();
       },
       deployMarket: function () {
+        this.newMarket.project = this.allProjects[this.selectedProject].title;
+        console.log(this.newMarket);
         this.$store.dispatch('gnosis/addMarket', JSON.parse(JSON.stringify(this.newMarket)));
         this.showAddPanel = false;
         this.newMarket = {};
@@ -140,6 +121,10 @@
 
   .form {
     padding: 20px;
+  }
+
+  .button-space {
+    text-align: center;
   }
 
 </style>

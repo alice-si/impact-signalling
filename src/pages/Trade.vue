@@ -4,7 +4,7 @@
       <md-card v-for="(market, index) in this.$store.state.gnosis.markets" :key="market.outcome">
         <md-card-content>
 
-          {{market.address}}
+          {{market.project}}
 
           <span class="card-buttons">
             <md-card-expand-trigger v-if="market.allowance > 0">
@@ -24,13 +24,40 @@
         <md-card-expand>
 
 
-
           <md-card-expand-content>
-            <md-card-content>
-              <md-button @click="buy(market)" class="md-icon-button md-dense md-raised md-primary">
-                <md-icon>add</md-icon>
-              </md-button>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio itaque ea, nostrum odio. Dolores, sed accusantium quasi non, voluptas eius illo quas, saepe voluptate pariatur in deleniti minus sint. Excepturi.
+            <md-card-content style="text-align:center;">
+
+              <div style="margin-left:50px;">
+                <div style="float: left">
+                  <md-button class="buy-sell"> Buy @ 0.66</md-button>
+                  <br/>
+                  <md-button class="buy-sell"> Sell @ 0.44</md-button>
+                </div>
+
+                <md-badge class="md-primary" md-position="bottom" md-content="12" style="float:left;">
+                  <md-button @click="buy(market)" class="md-icon-button md-raised md-accent market-icon">
+                    <md-icon style="color: white;">thumb_down</md-icon>
+                  </md-button>
+                </md-badge>
+              </div>
+
+              <span style="line-height: 60px;">
+                {{market.address}}
+              </span>
+
+
+              <div style="float: right; margin-right: 50px;">
+                <md-button class="buy-sell"> Buy @ 0.66</md-button>
+                <br/>
+                <md-button class="buy-sell"> Sell @ 0.44</md-button>
+              </div>
+
+              <md-badge class="md-primary" md-position="bottom" md-content="12" style="float:right;">
+                <md-button @click="buy(market)" class="md-icon-button md-raised md-yes market-icon">
+                  <md-icon style="color: white;">thumb_up</md-icon>
+                </md-button>
+              </md-badge>
+
             </md-card-content>
           </md-card-expand-content>
         </md-card-expand>
@@ -67,6 +94,8 @@
 </script>
 
 <style scoped>
+
+
   .page-container {
     min-height: 600px;
     overflow: hidden;
@@ -92,5 +121,21 @@
   .card-buttons {
     float: right;
   }
+
+  .md-yes {
+    background-color: #42b983 !important;
+    color: white !important;
+    float: right;
+
+  }
+
+  .market-icon {
+    margin-top: 15px;
+  }
+
+  .buy-sell {
+    margin: 0px !important;
+  }
+
 
 </style>
