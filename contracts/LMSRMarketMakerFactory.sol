@@ -4,7 +4,7 @@ import { IERC20 } from "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import { ConditionalTokens } from "@gnosis.pm/conditional-tokens-contracts/contracts/ConditionalTokens.sol";
 import { CTHelpers } from "@gnosis.pm/conditional-tokens-contracts/contracts/CTHelpers.sol";
 import { ConstructedCloneFactory } from "@gnosis.pm/util-contracts/contracts/ConstructedCloneFactory.sol";
-import { LMSRMarketMaker } from "@gnosis.pm/conditional-tokens-market-makers/contracts/LMSRMarketMaker.sol";
+import { LMSRMarketMaker } from "./LMSRMarketMaker.sol";
 import { Whitelist } from "@gnosis.pm/conditional-tokens-market-makers/contracts/Whitelist.sol";
 import { ERC1155TokenReceiver } from "@gnosis.pm/conditional-tokens-contracts/contracts/ERC1155/ERC1155TokenReceiver.sol";
 

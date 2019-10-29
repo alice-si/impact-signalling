@@ -5,7 +5,7 @@ import MM_JSON from '@contracts/MarketMaker.json'
 import COLLATERAL_JSON from '@contracts/CollateralToken.json'
 const ethers = require('ethers');
 
-const MARKET_MAKER_FACTORY = '0x2d6FB5b6C13d48176ED24a65c8b25C2D14995271';
+const MARKET_MAKER_FACTORY = '0x4D5665f7FdAb9973866eBb82Ec91C8B9eE23a8C8';
 
 import {
   MSGS,
@@ -52,6 +52,10 @@ export async function createMarket(newMarket) {
   newMarket.address = getMarketIdFromTx(receipt);
   newMarket.ratio = 50;
 
+  let mm = new ethers.Contract(newMarket.address, MM_JSON.abi, wallet);
+  newMarket.yesPosition  = await mm.generateAtomicPositionId(0);
+  newMarket.noPosition  = await mm.generateAtomicPositionId(1);
+
   updateMarket(newMarket);
 
   commit('addMarket', newMarket);
@@ -62,6 +66,7 @@ export async function createMarket(newMarket) {
 export async function updateMarket(market) {
   let wallet = await getWallet();
   let mm = new ethers.Contract(market.address, MM_JSON.abi, wallet);
+  let address = await wallet.getAddress();
 
   //Prices
   market.costBuyYes = Number.parseFloat(ethers.utils.formatEther(await mm.calcNetCost([ONE, 0]))).toPrecision(3);
@@ -70,13 +75,9 @@ export async function updateMarket(market) {
   market.costBuyNo = Number.parseFloat(ethers.utils.formatEther(await mm.calcNetCost([0, ONE]))).toPrecision(3);
   market.costSellNo = (-Number.parseFloat(ethers.utils.formatEther(await mm.calcNetCost([0, MIN_ONE])))).toPrecision(3);
 
-
   //Holdings
-  // let mm = new ethers.Contract(newMarket.address, MM_JSON.abi, wallet);
-  // market.yesPosition = await mm.generateAtomicPositionId(0);
-  // console.log("Yes: " + newMarket.yesPosition);
-
-
+  market.yesBalance = ethers.utils.formatEther(await orchestrator.getOutcomeBalance(address, market.yesPosition));
+  market.noBalance = ethers.utils.formatEther(await orchestrator.getOutcomeBalance(address, market.noPosition));
 
   commit('updateMarket', market);
   localStorage.markets = JSON.stringify(state.markets);

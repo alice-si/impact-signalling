@@ -34,7 +34,7 @@
                   <md-button class="buy-sell"> Sell @ {{market.costSellNo}}</md-button>
                 </div>
 
-                <md-badge class="md-primary" md-position="bottom" md-content="12" style="float:left;">
+                <md-badge class="md-primary" md-position="bottom" :md-content="market.noBalance" style="float:left;">
                   <md-button @click="buy(market)" class="md-icon-button md-raised md-accent market-icon">
                     <md-icon style="color: white;">thumb_down</md-icon>
                   </md-button>
@@ -43,6 +43,7 @@
 
               <span style="line-height: 60px;">
                 Address: <b>{{market.address}}</b>
+                <md-button @click="test(market)">test</md-button>
               </span>
 
 
@@ -52,7 +53,7 @@
                 <md-button class="buy-sell"> Sell @ {{market.costSellYes}}</md-button>
               </div>
 
-              <md-badge class="md-primary" md-position="bottom" md-content="12" style="float:right;">
+              <md-badge class="md-primary" md-position="bottom" :md-content="market.yesBalance" style="float:right;">
                 <md-button @click="buy(market)" class="md-icon-button md-raised md-yes market-icon">
                   <md-icon style="color: white;">thumb_up</md-icon>
                 </md-button>

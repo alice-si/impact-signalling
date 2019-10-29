@@ -1,6 +1,6 @@
 pragma solidity ^0.5.2;
 
-import '@gnosis.pm/conditional-tokens-market-makers/contracts/LMSRMarketMakerFactory.sol';
+import './LMSRMarketMakerFactory.sol';
 import '@gnosis.pm/conditional-tokens-market-makers/contracts/Whitelist.sol';
 import '@gnosis.pm/conditional-tokens-contracts/contracts/ConditionalTokens.sol';
 import '@gnosis.pm/conditional-tokens-contracts/contracts/CTHelpers.sol';
@@ -45,6 +45,10 @@ contract SignallingOrchestrator is Ownable {
         address[] memory users = new address[](1);
         users[0] = user;
         whitelist.addToWhitelist(users);
+    }
+
+    function getOutcomeBalance(address owner, uint256 positionId) public view returns(uint256) {
+      return conditionalTokens.balanceOf(owner, positionId);
     }
 
 }

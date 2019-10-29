@@ -53,6 +53,11 @@ contract('Signalling Orchestrator', function ([owner, oracle, investor, trader])
     console.log("Market id: " + marketId);
   });
 
+  step("should get position ID", async function () {
+    let positionId = await mm.generateAtomicPositionId(0);
+    console.log("POSITION ID: " + positionId);
+  });
+
   step("should onboard user", async function () {
     await so.onBoard(trader, HUNDRED);
   });
@@ -65,4 +70,8 @@ contract('Signalling Orchestrator', function ([owner, oracle, investor, trader])
     await collateral.approve(mm.address, HUNDRED, {from: trader});
     await mm.trade([ONE, 0], 0, {from: trader});
   });
+
+
+
+
 });

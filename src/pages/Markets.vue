@@ -45,7 +45,7 @@
           <md-field>
             <label for="project">Project</label>
             <md-select v-model="selectedProject" name="project" id="project">
-              <md-option v-for="(p, index) in allProjects" :value="index">{{p.title}}</md-option>
+              <md-option v-for="(p, index) in allProjects" :value="index" :key="p.title">{{p.title}}</md-option>
             </md-select>
           </md-field>
         </div>
@@ -54,7 +54,7 @@
           <md-field v-if="selectedProject">
             <label for="outcome">Outcome</label>
             <md-select v-model="newMarket.outcome" name="outcome" id="outcome">
-              <md-option v-for="(o, index) in allProjects[selectedProject]._outcomes" :value="o.title">{{o.title}}</md-option>
+              <md-option v-for="(o, index) in allProjects[selectedProject]._outcomes" :value="o.title" :key="o.title">{{o.title}}</md-option>
             </md-select>
           </md-field>
         </div>
