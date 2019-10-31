@@ -5,7 +5,7 @@ import MM_JSON from '@contracts/MarketMaker.json'
 import COLLATERAL_JSON from '@contracts/CollateralToken.json'
 const ethers = require('ethers');
 
-const MARKET_MAKER_FACTORY = '0x4D5665f7FdAb9973866eBb82Ec91C8B9eE23a8C8';
+const MARKET_MAKER_FACTORY = '0x51dFBCafd854C2Bbf7083543E6F0b0054Cf32478';
 
 import {
   MSGS,
