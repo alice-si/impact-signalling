@@ -1,11 +1,12 @@
-import CONDITIONAL_TOKENS_JSON from '@gnosis-contracts/conditional-tokens-contracts/build/contracts/ConditionalTokens'
-import WHITELIST_JSON from '@gnosis-contracts/conditional-tokens-contracts/build/contracts/ConditionalTokens'
+import CONDITIONAL_TOKENS_JSON from '@gnosis-contracts/conditional-tokens-contracts/build/contracts/ConditionalTokens.json'
+import WHITELIST_JSON from '@contracts//Whitelist.json'
 import ORCHESTRATOR_JSON from '@contracts/SignallingOrchestrator.json'
 import MM_JSON from '@contracts/MarketMaker.json'
 import COLLATERAL_JSON from '@contracts/CollateralToken.json'
 const ethers = require('ethers');
 
-const MARKET_MAKER_FACTORY = '0x51dFBCafd854C2Bbf7083543E6F0b0054Cf32478';
+//FIXME: Please replace with your own deployed MarketMakerFactory
+const MARKET_MAKER_FACTORY = '0xd246B8580F223291E5ae75B875fde0640bf321cf';
 
 import {
   MSGS,
@@ -17,7 +18,7 @@ import {
 } from '../ethers/ethersConnect';
 
 var commit, state;
-var orchestrator, collateral, whitelist;
+var orchestrator, collateral, whitelist, conditionalTokens;
 
 const ONE = ethers.utils.parseEther("1");
 const MIN_ONE = ethers.utils.parseEther("-1");
@@ -27,10 +28,13 @@ export async function deployOrchestrator() {
   let wallet = await getWallet();
   let address = await wallet.getAddress();
   let factory = new ethers.ContractFactory(ORCHESTRATOR_JSON.abi, ORCHESTRATOR_JSON.bytecode, wallet);
-  orchestrator = await factory.deploy(address);
-  //Connect to Market Maker factory
-  await orchestrator.setMarketMakerFactory(MARKET_MAKER_FACTORY);
+  orchestrator = await factory.deploy(address, MARKET_MAKER_FACTORY);
+
+  //Update local storage
   localStorage.orchestratorAddress = orchestrator.address;
+  localStorage.users = [];
+  localStorage.markets = [];
+
   commit('orchestratorAddress', orchestrator.address);
   console.log("Signalling Orchestrator deployed to: " + orchestrator.address);
 }
@@ -84,18 +88,22 @@ export async function updateMarket(market) {
 }
 
 export async function joinMarket(market) {
+  await conditionalTokens.setApprovalForAll(market.address, true, {gasLimit: 1000000});
   await collateral.approve(market.address, HUNDRED, {gasLimit: 1000000});
   market.allowance = 100;
   commit('updateMarket', market);
   console.log("Collateral approved for: " + market.address);
 }
 
-export async function trade(market) {
+export async function trade(market, order) {
+  console.log(market);
+  console.log(order);
   let wallet = await getWallet();
   let mm = new ethers.Contract(market.address, MM_JSON.abi, wallet);
-  await mm.trade([ONE, 0], 0, {gasLimit: 1000000});
+  await mm.trade(order, 0, {gasLimit: 1000000});
   console.log("Traded on : " + market.address);
   await updateMarket(market);
+  await updateBalance();
 }
 
 export async function mintTokens(amount) {
@@ -152,11 +160,17 @@ var linkContracts = async function() {
     commit('collateralAddress', collateral.address);
     console.log("Collateral token linked: " + collateral.address);
 
-    //Collateral
+    //Witelist
     let whitelistAddress = await orchestrator.whitelist();
     whitelist = new ethers.Contract(whitelistAddress, WHITELIST_JSON.abi, wallet);
     commit('whitelistAddress', whitelist.address);
     console.log("Whitelist linked: " + whitelist.address);
+
+    //ConditionalTokens
+    let conditionalTokensAddress = await orchestrator.conditionalTokens();
+    conditionalTokens = new ethers.Contract(conditionalTokensAddress, CONDITIONAL_TOKENS_JSON.abi, wallet);
+    commit('conditionalTokensAddress', conditionalTokens.address);
+    console.log("Conditional Tokens linked: " + conditionalTokens.address);
 
     //Users
     if (localStorage.users) {

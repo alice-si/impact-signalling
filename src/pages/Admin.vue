@@ -7,8 +7,6 @@
     <md-card-content>
 
 
-      <md-button class="md-raised md-primary" v-on:click="getTokens()">Get tokens</md-button>
-      <br/>
       <md-table>
         <md-table-row>
           <md-table-head md-numeric>ID</md-table-head>
@@ -40,6 +38,12 @@
           <md-table-cell>{{this.$store.state.gnosis.whitelistAddress}}</md-table-cell>
         </md-table-row>
 
+        <md-table-row>
+          <md-table-cell md-numeric>4</md-table-cell>
+          <md-table-cell>Conditional Tokens</md-table-cell>
+          <md-table-cell>{{this.$store.state.gnosis.conditionalTokensAddress}}</md-table-cell>
+        </md-table-row>
+
       </md-table>
 
     </md-card-content>
@@ -63,9 +67,6 @@
       },
       deployOrchestrator: function() {
         this.$store.dispatch('gnosis/deployOrchestrator');
-      },
-      getTokens: function() {
-        this.$store.dispatch('gnosis/getSignallingTokens', 10);
       }
     }
   }

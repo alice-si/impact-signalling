@@ -9,7 +9,7 @@ import './CollateralToken.sol';
 
 contract SignallingOrchestrator is Ownable {
 
-    ConditionalTokens conditionalTokens;
+    ConditionalTokens public conditionalTokens;
     Whitelist public whitelist;
     CollateralToken public collateralToken;
     LMSRMarketMakerFactory marketMakerFactory;
@@ -17,11 +17,15 @@ contract SignallingOrchestrator is Ownable {
 
     uint64 FEE_FACTOR = 1;
 
-    constructor(address _oracle) public {
+    constructor(address _oracle, LMSRMarketMakerFactory _marketMakerFactory) public {
+        require(address(_oracle) != address(0));
+        require(address(_marketMakerFactory) != address(0));
+
         whitelist = new Whitelist();
         collateralToken = new CollateralToken();
         conditionalTokens = new ConditionalTokens();
         oracle = _oracle;
+        marketMakerFactory = _marketMakerFactory;
     }
 
     function setMarketMakerFactory(LMSRMarketMakerFactory _marketMakerFactory) public onlyOwner {

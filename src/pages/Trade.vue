@@ -29,13 +29,13 @@
 
               <div style="margin-left:50px;">
                 <div style="float: left">
-                  <md-button class="buy-sell"> Buy @ {{market.costBuyNo}}</md-button>
+                  <md-button class="buy-sell" @click="buyNo(market)"> Buy @ {{market.costBuyNo}}</md-button>
                   <br/>
-                  <md-button class="buy-sell"> Sell @ {{market.costSellNo}}</md-button>
+                  <md-button class="buy-sell" @click="sellNo(market)"> Sell @ {{market.costSellNo}}</md-button>
                 </div>
 
                 <md-badge class="md-primary" md-position="bottom" :md-content="market.noBalance" style="float:left;">
-                  <md-button @click="buy(market)" class="md-icon-button md-raised md-accent market-icon">
+                  <md-button @click="buyNo(market)" class="md-icon-button md-raised md-accent market-icon">
                     <md-icon style="color: white;">thumb_down</md-icon>
                   </md-button>
                 </md-badge>
@@ -43,18 +43,17 @@
 
               <span style="line-height: 60px;">
                 Address: <b>{{market.address}}</b>
-                <md-button @click="test(market)">test</md-button>
               </span>
 
 
               <div style="float: right; margin-right: 50px;">
-                <md-button class="buy-sell"> Buy @ {{market.costBuyYes}}</md-button>
+                <md-button class="buy-sell" @click="buyYes(market)"> Buy @ {{market.costBuyYes}}</md-button>
                 <br/>
-                <md-button class="buy-sell"> Sell @ {{market.costSellYes}}</md-button>
+                <md-button class="buy-sell" @click="sellYes(market)"> Sell @ {{market.costSellYes}}</md-button>
               </div>
 
               <md-badge class="md-primary" md-position="bottom" :md-content="market.yesBalance" style="float:right;">
-                <md-button @click="buy(market)" class="md-icon-button md-raised md-yes market-icon">
+                <md-button @click="buyYes(market)"  class="md-icon-button md-raised md-yes market-icon">
                   <md-icon style="color: white;">thumb_up</md-icon>
                 </md-button>
               </md-badge>
@@ -72,9 +71,13 @@
 
 
 <script>
+  const ethers = require('ethers');
   import {
     updateMarket
   } from '../store/gnosis/contracts';
+
+  const ONE = ethers.utils.parseEther("1");
+  const MIN_ONE = ethers.utils.parseEther("-1");
 
   export default {
     name: 'Trade',
@@ -89,15 +92,21 @@
         console.log("Joining market: " + market.address);
         this.$store.dispatch('gnosis/joinMarket', market);
       },
-      test: async function(market) {
-        console.log(market);
-        await updateMarket(market);
+
+      buyYes: function (market) {
+        console.log("Buying YES tokens");
+        this.$store.dispatch('gnosis/trade', {market: market, yesAmount: ONE, noAmount: 0});
+      },
+      buyNo: function (market) {
+        this.$store.dispatch('gnosis/trade', {market: market, yesAmount: 0, noAmount: ONE});
+      },
+      sellYes: function (market) {
+        this.$store.dispatch('gnosis/trade', {market: market, yesAmount: MIN_ONE, noAmount: ONE});
+      },
+      sellNo: function (market) {
+        this.$store.dispatch('gnosis/trade', {market: market, yesAmount: 0, noAmount: MIN_ONE});
       },
 
-      buy: function (market) {
-        console.log("Buying on: " + market.address);
-        this.$store.dispatch('gnosis/trade', market);
-      }
     }
   }
 </script>

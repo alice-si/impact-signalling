@@ -11,6 +11,9 @@ export default {
   whitelistAddress: function (state, value) {
     state.whitelistAddress = value;
   },
+  conditionalTokensAddress: function (state, value) {
+    state.conditionalTokensAddress = value;
+  },
   addUser: function (state, newUser) {
     state.users.push(newUser);
   },
