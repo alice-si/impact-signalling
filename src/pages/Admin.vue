@@ -7,8 +7,6 @@
     <md-card-content>
 
 
-      <md-button class="md-raised md-primary" v-on:click="getTokens()">Get tokens</md-button>
-      <br/>
       <md-table>
         <md-table-row>
           <md-table-head md-numeric>ID</md-table-head>
@@ -63,9 +61,6 @@
       },
       deployOrchestrator: function() {
         this.$store.dispatch('gnosis/deployOrchestrator');
-      },
-      getTokens: function() {
-        this.$store.dispatch('gnosis/getSignallingTokens', 10);
       }
     }
   }
