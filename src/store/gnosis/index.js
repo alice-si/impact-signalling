@@ -7,6 +7,7 @@ const state = () => ({
   orchestratorAddress: null,
   collateralAddress: null,
   whitelistAddress: null,
+  conditionalTokensAddress: null,
   collateralBalance: 0,
   users: [],
   markets: []

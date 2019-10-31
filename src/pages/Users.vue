@@ -25,7 +25,11 @@
             </md-table-row>
           </md-table>
 
-          <md-button class="md-primary" @click="addUser()">Add User</md-button>
+          <div class="button-space">
+            <md-button class="md-primary" @click="addUser()">+ Add User</md-button>
+          </div>
+
+
 
         </md-card-content>
       </md-card>
@@ -109,5 +113,9 @@
    .form {
      padding: 20px;
    }
+
+  .button-space {
+    text-align: center;
+  }
 
 </style>

@@ -38,6 +38,12 @@
           <md-table-cell>{{this.$store.state.gnosis.whitelistAddress}}</md-table-cell>
         </md-table-row>
 
+        <md-table-row>
+          <md-table-cell md-numeric>4</md-table-cell>
+          <md-table-cell>Conditional Tokens</md-table-cell>
+          <md-table-cell>{{this.$store.state.gnosis.conditionalTokensAddress}}</md-table-cell>
+        </md-table-row>
+
       </md-table>
 
     </md-card-content>

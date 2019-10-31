@@ -29,7 +29,7 @@ export default {
     await joinMarket(market);
   },
 
-  async trade(ctx, market) {
-    await trade(market);
+  async trade(ctx, {market, yesAmount, noAmount}) {
+    await trade(market, [yesAmount, noAmount]);
   }
 }
