@@ -61,8 +61,15 @@ async function registerServiceProvider() {
 
 async function getMonitoringRequestDetails(requestId) {
   let sms = getSMSContract(SIMPLE_MONITORING_SERVICE);
-  // TODO FIXME: convert result to Object
-  return await sms.getRequestDetails(requestId);
+  let requestDetails = await sms.getRequestDetails(requestId);
+  return {
+    contractAddress: requestDetails[1],
+    emailTo: requestDetails[6],
+    condition: {
+      type: requestDetails[3],
+      price: requestDetails[4].toNumber() / 100,
+    }
+  };
 }
 
 function listenOnMonitoringRequestCreation(onRequestAddedCallback) {
@@ -86,6 +93,7 @@ module.exports = {
 
   // For sms contract
   registerServiceProvider,
+  getMonitoringRequestDetails,
   listenOnMonitoringRequestCreation,
   listenOnMonitoringRequestCancellation,
 };

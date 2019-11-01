@@ -9,9 +9,9 @@ const {
 
 const TIMEOUT_BEFORE_PRICE_CHECKING = 2000;
 const CONDITION_TYPES = {
-  GREATER_THAN: 'GREATER_THAN',
-  LESS_THAN: 'LESS_THAN',
-  EQUAL: 'EQUAL', // I am not sure if this condition type is useful
+  GREATER_THAN: 0,
+  LESS_THAN: 2,
+  EQUAL: 1, // I am not sure if this condition type is useful
 };
 
 let monitoringRequestStatuses = {};
@@ -75,24 +75,25 @@ function runNotifier(monitoringRequestId, mmContractAddress, condition, emailTo)
         mmContractAddress,
         curPrices);
     } else {
-      console.log('Condition is not fulfilled. Skipping.');
+      notifierLog('Condition is not fulfilled. Skipping.');
     }
   });
 }
 
+// TODO later we can implement checking if we should process this request
+// by checking providerId
 async function runMonitoringService() {
   console.log('Registering a new monitoring service provider');
   await registerServiceProvider();
+  console.log('New service provider registered. Listening on MonitoringRequest events..');
   listenOnMonitoringRequestCreation(async function({ requestId }) {
-    console.log(JSON.stringify(requestId));
+    console.log(`Got new monitoring request: ${requestId}`);
     monitoringRequest.activate(requestId);
-    console.log(await getMonitoringRequestDetails(requestId));
-    // TODO alex uncomment when getMonitoringRequestDetails is debugged
-    // const {
-    //   contractAddress,
-    //   condition,
-    //   emailTo } = await getMonitoringRequestDetails(requestId);
-    // runNotifier(params.requestId, contractAddress, condition, emailTo);
+    const {
+      contractAddress,
+      condition,
+      emailTo } = await getMonitoringRequestDetails(requestId);
+    runNotifier(requestId, contractAddress, condition, emailTo);
   });
 
   // TODO implement cancellation handling later
@@ -101,10 +102,12 @@ async function runMonitoringService() {
   // }
 }
 
+runMonitoringService();
+
 // Example code of running notifier
-runNotifier(0, '0x4c2ba32ce9a06c380e9b954298e2959c35a17921', {
-  type: CONDITION_TYPES.GREATER_THAN,
-  price: 0.504},
- 'alex@alice.si'
-);
-monitoringRequestStatuses[0] = 'active';
+// runNotifier(0, '0x4c2ba32ce9a06c380e9b954298e2959c35a17921', {
+//   type: CONDITION_TYPES.GREATER_THAN,
+//   price: 0.504},
+//  'alex@alice.si'
+// );
+// monitoringRequestStatuses[0] = 'active';

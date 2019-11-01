@@ -22,9 +22,13 @@ import {
 var commit, state;
 var orchestrator, collateral, whitelist, conditionalTokens;
 
+const GNOSIS_PROTOCOL = 0;
+const EMAIL_MESSAGE_TYPE = 0;
+
 const ONE = ethers.utils.parseEther("1");
 const MIN_ONE = ethers.utils.parseEther("-1");
 const HUNDRED = ethers.utils.parseEther("100");
+const BI_WEEKLY_FEE = ethers.utils.parseEther("0.02");
 
 export async function deployOrchestrator() {
   let wallet = await getWallet();
@@ -108,15 +112,54 @@ export async function trade(market, order) {
   await updateBalance();
 }
 
-// TODO alex implement
-export async function getMonitoringServiceProviders() {
-  return [];
+async function getSMSContract() {
+  let wallet = await getWallet();
+  let sms = new ethers.Contract(SIMPLE_MONITORING_SERVICE, SMS_JSON.abi, wallet);
+  return sms;
 }
 
-// TODO alex implement
-export async function createNewMonitoringRequest() {
-  // TODO implement
-  throw 'NOT IMPLEMENTED';
+// TODO implement this function later to allow user select from different service providers
+// export async function getMonitoringServiceProviders() {
+  // let sms = await getSMSContract();
+  // return await sms.
+// }
+
+// TODO check if it works correctly
+// TODO maybe try to find more readable ways to
+function getCondition({ condition }) {
+  // We don't use EQUAL codnition
+  if (condition == 'GREATER_THAN') {
+    return 0;
+  } else {
+    return 2; // LESS_THAN
+  }
+}
+
+// newRequest should have field "value" which should contain integer number
+export async function createNewMonitoringRequest(newRequest) {
+  // Currently sms contract has no interface for
+  // getting service providers details
+  let serviceProviderId = 0; // <- FIXME: now it is hardcoded
+
+  // console.log(newRequest);
+  // console.log(GNOSIS_PROTOCOL);
+  // console.log(getCondition(newRequest));
+  // console.log(EMAIL_MESSAGE_TYPE);
+  // console.log(BI_WEEKLY_FEE);
+  
+
+  let sms = await getSMSContract();
+  await sms.registerMonitoringRequest(
+    GNOSIS_PROTOCOL,
+    newRequest.targetAddress,
+    "price", getCondition(newRequest), newRequest.value,
+    EMAIL_MESSAGE_TYPE, newRequest.email,
+    serviceProviderId, {
+      value: BI_WEEKLY_FEE
+    });
+
+  // Uncomment it later to refresh monitoring requests list
+  // await updateMonitoringRequests();
 }
 
 export async function mintTokens(amount) {

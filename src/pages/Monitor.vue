@@ -1,0 +1,165 @@
+<template>
+  <div class="page-container">
+    <md-content>
+      <md-card>
+        <md-card-header>
+          <div class="md-title">Monitoring requests</div>
+          <div class="md-subhead">you can add monitoring requests to be notified by email when price changes</div>
+        </md-card-header>
+        <md-card-content>
+
+          <md-table>
+            <md-table-row>
+              <md-table-head md-numeric>ID</md-table-head>
+              <md-table-head>Token</md-table-head>
+              <md-table-head>Condition</md-table-head>
+              <md-table-head>Price</md-table-head>
+              <md-table-head>Email</md-table-head>
+            </md-table-row>
+
+            <!-- TODO add rows with monitoring requests  -->
+            <!-- <md-table-row v-for="(market, index) in this.$store.state.gnosis.markets" :key="market.outcome">
+              <md-table-cell md-numeric>{{index + 1}}</md-table-cell>
+              <md-table-cell>{{market.project}}</md-table-cell>
+              <md-table-cell>{{market.outcome}}</md-table-cell>
+              <md-table-cell>{{market.address}}</md-table-cell>
+              <md-table-cell>{{market.ratio}}%</md-table-cell>
+            </md-table-row> -->
+          </md-table>
+
+          <div class="button-space">
+            <md-button class="md-primary" @click="addMonitoringRequest()"> + Add monitoring request</md-button>
+          </div>
+
+        </md-card-content>
+      </md-card>
+    </md-content>
+
+    <md-drawer class="md-drawer md-right" :md-active.sync="showAddPanel" md-swipeable>
+      <md-toolbar class="md-primary">
+        <span class="md-title">Add monitoring request</span>
+      </md-toolbar>
+
+
+      <div class="form">
+        <div class="md-layout-item md-small-size-100">
+          <md-field>
+            <label for="project">Market</label>
+            <md-select v-model="selectedMarket" name="market" id="market">
+              <md-option v-for="(market, index) in this.$store.state.gnosis.markets" :value="market.address" :key="index">
+                {{ market.address }}
+              </md-option>
+            </md-select>
+          </md-field>
+        </div>
+
+        <div class="md-layout-item md-small-size-100">
+          <md-field>
+            <label for="condition">Condition</label>
+            <md-select v-model="selectedCondition" name="condition" id="condition">
+              <md-option v-for="(condition, index) in conditions" :value="condition" :key="index">
+                {{ condition }}
+              </md-option>
+            </md-select>
+          </md-field>
+        </div>
+
+        <div class="md-layout-item md-small-size-100">
+          <md-field>
+            <label for="value">Value</label>
+            <md-input type="number" name="value" id="value" v-model="value" />
+          </md-field>
+        </div>
+
+        <div class="md-layout-item md-small-size-100">
+          <md-field>
+            <label for="email">Email</label>
+            <md-input type="email" name="email" id="email" v-model="email" />
+          </md-field>
+        </div>
+
+        <div class="button-space">
+          <md-button class="md-primary md-raised" @click="sendAdditionTx()">ADD</md-button>
+        </div>
+      </div>
+
+
+    </md-drawer>
+
+  </div>
+</template>
+
+
+<script>
+  import {gql} from "apollo-boost";
+
+  export default {
+    name: 'Markets',
+
+    apollo: {
+      // Simple query that will update the 'hello' vue property
+      allProjects: gql`{allProjects {title _outcomes {title} } }`,
+    },
+
+    data: () => ({
+      newMarket: {},
+      showAddPanel: false,
+      sending: false,
+      selectedMarket: null,
+      selectedCondition: null,
+      value: 0,
+      email: 'alex@alice.si',
+      conditions: [
+        'GREATER_THAN',
+        'LESS_THAN',
+      ]
+    }),
+
+    methods: {
+      addMonitoringRequest: async function () {
+        this.showAddPanel = true;
+      },
+      sendAdditionTx: function () {
+        let newMonitoringRequest = {
+          targetAddress: this.selectedMarket,
+          condition: this.selectedCondition,
+          value: Math.round(this.value * 100),
+          email: this.email,
+        };
+        this.$store.dispatch('gnosis/addMonitoringRequest', Object.assign(newMonitoringRequest));
+        this.showAddPanel = false;
+      },
+      // deployMarket: function () {
+      //   // this.newMarket.project = this.allProjects[this.selectedProject].title;
+      //   // console.log(this.newMarket);
+      //   this.$store.dispatch('gnosis/addMarket', JSON.parse(JSON.stringify(this.newMarket)));
+      //   this.showAddPanel = false;
+      //   this.newMarket = {};
+      // }
+    }
+  }
+</script>
+
+<style scoped>
+  .page-container {
+    min-height: 600px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .md-drawer {
+    width: 400px;
+    max-width: calc(100vw - 125px);
+    border: 1px solid gray;
+    height: 450px;
+  }
+
+  .form {
+    padding: 20px;
+  }
+
+  .button-space {
+    text-align: center;
+  }
+
+</style>

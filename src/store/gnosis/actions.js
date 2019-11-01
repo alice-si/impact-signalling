@@ -5,7 +5,8 @@ import {
   deployOrchestrator,
   initContracts,
   trade,
-  joinMarket
+  joinMarket,
+  createNewMonitoringRequest,
 } from './contracts';
 
 export default {
@@ -23,6 +24,10 @@ export default {
 
   async addMarket(ctx, newMarket) {
     await createMarket(newMarket);
+  },
+
+  async addMonitoringRequest(ctx, newMonitoringRequest) {
+    await createNewMonitoringRequest(newMonitoringRequest);
   },
 
   async joinMarket(ctx, market) {
