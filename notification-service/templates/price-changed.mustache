@@ -1,9 +1,38 @@
-<h2>Notification about {{ token }} price</h2>
+<head>
+  <style>
+    table,td,td,th {
+      border: 1px solid black;
+    }
+    td,th {
+      padding: 5px;
+    }
+  </style>
+</head>
 
-<h4>Current price for {{ token }} is {{ curPrice }}</h4>
+<body>
+  <h3>Token: {{ token }}</h3>
 
-<p>
-Some additional text could be here.
-We also can include links to the platform
-and contact information.
-</p>
+  <a href="http://localhost:8080/#/trade">
+    <h3>Go to trade panel</h3>
+  </a>
+
+  <h4>See current prices below</h4>
+
+  <table>
+    <tr>
+      <th></th>
+      <th>Yes</th>
+      <th>No</th>
+    </tr>
+    <tr>
+      <td>Buy</td>
+      <td>{{ curPrices.costBuyYes }}</td>
+      <td>{{ curPrices.costBuyNo }}</td>
+    </tr>
+    <tr>
+      <td>Sell</td>
+      <td>{{ curPrices.costSellYes }}</td>
+      <td>{{ curPrices.costSellNo }}</td>
+    </tr>
+  </table>
+</body>

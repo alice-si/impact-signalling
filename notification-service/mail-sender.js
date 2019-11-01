@@ -1,4 +1,4 @@
-const awsSesConfig = require('./awsSesConfig');
+const secrets = require('./secrets');
 // aws will automatically load credentials from env variables:
 // AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
 const aws = require('aws-sdk');
@@ -10,7 +10,7 @@ const API_VERSION = '2010-12-01';
 const CHARSET = 'UTF-8';
 const templateDir = __dirname + '/templates/';
 
-aws.config.update({region: awsSesConfig.region});
+aws.config.update({region: secrets.aws.region});
 
 
 async function send(mail) {
@@ -31,7 +31,7 @@ async function send(mail) {
         Data: mail.subject
       }
     },
-    Source: awsSesConfig.sender,
+    Source: secrets.aws.sender,
     ReplyToAddresses: [],
   };
 
@@ -41,10 +41,20 @@ async function send(mail) {
   console.log('Email sent: ' + sendResult.MessageId);
 }
 
-async function sendPriceChangedNotificationByEmail(to, token, curPrice) {
-  let subject = `Price for ${token} has been changed. Current price: ${curPrice}`;
+// TODO update implementation to have result like 0x123...as
+function shortenAddress(address) {
+  const maxLen = 5;
+  if (address.length <= maxLen) {
+    return address;
+  }
+  return address.slice(0, maxLen) + '...';
+}
+
+async function sendPriceChangedNotificationByEmail(to, token, curPrices) {
+  let subject = `Price for ${shortenAddress(token)} has been changed:`
+   + ` ${curPrices.costBuyYes}(buy), ${curPrices.costSellYes}(sell)`;
   let template = await fs.readFileAsync(templateDir + 'price-changed.mustache', 'utf8');
-  let html = mustache.render(template, { token, curPrice });
+  let html = mustache.render(template, { token, curPrices });
   await send({
     to,
     subject,

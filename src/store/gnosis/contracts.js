@@ -2,11 +2,13 @@ import CONDITIONAL_TOKENS_JSON from '@gnosis-contracts/conditional-tokens-contra
 import WHITELIST_JSON from '@contracts//Whitelist.json'
 import ORCHESTRATOR_JSON from '@contracts/SignallingOrchestrator.json'
 import MM_JSON from '@contracts/MarketMaker.json'
+import SMS_JSON from '@contracts/SimpleMonitoringService.json'
 import COLLATERAL_JSON from '@contracts/CollateralToken.json'
 const ethers = require('ethers');
 
 //FIXME: Please replace with your own deployed MarketMakerFactory
-const MARKET_MAKER_FACTORY = '0xd246B8580F223291E5ae75B875fde0640bf321cf';
+const MARKET_MAKER_FACTORY = '0x51dFBCafd854C2Bbf7083543E6F0b0054Cf32478';
+const SIMPLE_MONITORING_SERVICE = '0xE237f26fB5242FE8887184BcBeaA866B31E2F1Bb';
 
 import {
   MSGS,
@@ -104,6 +106,17 @@ export async function trade(market, order) {
   console.log("Traded on : " + market.address);
   await updateMarket(market);
   await updateBalance();
+}
+
+// TODO alex implement
+export async function getMonitoringServiceProviders() {
+  return [];
+}
+
+// TODO alex implement
+export async function createNewMonitoringRequest() {
+  // TODO implement
+  throw 'NOT IMPLEMENTED';
 }
 
 export async function mintTokens(amount) {

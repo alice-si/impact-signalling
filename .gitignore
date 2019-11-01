@@ -16,4 +16,4 @@ yarn-error.log*
 *.sln
 
 # Ignore awsSesConfig with aws secrets
-notification-service/awsSesConfig.js
+notification-service/secrets.js
