@@ -8,7 +8,7 @@ const ethers = require('ethers');
 
 //FIXME: Please replace with your own deployed MarketMakerFactory
 const MARKET_MAKER_FACTORY = '0x51dFBCafd854C2Bbf7083543E6F0b0054Cf32478';
-const SIMPLE_MONITORING_SERVICE = '0xE237f26fB5242FE8887184BcBeaA866B31E2F1Bb';
+const SIMPLE_MONITORING_SERVICE = '0x9699b0b659FBbFf0FC15cE01F98E76dee5880550';
 
 import {
   MSGS,
@@ -135,18 +135,23 @@ function getCondition({ condition }) {
   }
 }
 
+function getConditionText(num) {
+  if (num == 0) {
+    return 'GREATER_THAN';
+  }
+  if (num == 1) {
+    return 'EQUAL';
+  }
+  if (num == 2) {
+    return 'LESS_THAN';
+  }
+}
+
 // newRequest should have field "value" which should contain integer number
 export async function createNewMonitoringRequest(newRequest) {
   // Currently sms contract has no interface for
   // getting service providers details
   let serviceProviderId = 0; // <- FIXME: now it is hardcoded
-
-  // console.log(newRequest);
-  // console.log(GNOSIS_PROTOCOL);
-  // console.log(getCondition(newRequest));
-  // console.log(EMAIL_MESSAGE_TYPE);
-  // console.log(BI_WEEKLY_FEE);
-  
 
   let sms = await getSMSContract();
   await sms.registerMonitoringRequest(
@@ -158,8 +163,28 @@ export async function createNewMonitoringRequest(newRequest) {
       value: BI_WEEKLY_FEE
     });
 
-  // Uncomment it later to refresh monitoring requests list
-  // await updateMonitoringRequests();
+  await updateMonitoringRequests();
+}
+
+async function updateMonitoringRequests() {
+  state.monitoringRequests = await getMonitoringRequests();
+}
+
+async function getMonitoringRequests() {
+  let sms = await getSMSContract();
+  let requestsCount = await sms.getRequestsCount();
+  let requests = [];
+  for (let requestId = 0; requestId < requestsCount; requestId++) {
+    let reqDetails = await sms.getRequestDetails(requestId);
+    requests.push({
+      id: requestId,
+      condition: getConditionText(reqDetails[3]),
+      price: reqDetails[4].toNumber() / 100,
+      email: reqDetails[6],
+      market: reqDetails[1],
+    });
+  }
+  return requests;
 }
 
 export async function mintTokens(amount) {
@@ -234,6 +259,7 @@ var linkContracts = async function() {
       state.users = JSON.parse(localStorage.users);
     }
 
+    // Markets
     if (localStorage.markets) {
       console.log(localStorage.markets);
       state.markets = JSON.parse(localStorage.markets);
@@ -243,6 +269,9 @@ var linkContracts = async function() {
         commit('updateMarket', market);
       });
     }
+
+    // Monitoring requests
+    await updateMonitoringRequests();
 
     await updateBalance();
 

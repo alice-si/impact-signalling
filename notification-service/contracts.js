@@ -4,7 +4,7 @@ const SMS_JSON = require('../build/contracts/SimpleMonitoringService.json');
 const { mnemonic } = require('./secrets');
 
 // FIXME: replace with deployed SIMPLE_MONITORING_SERVICE_ADDRESS
-const SIMPLE_MONITORING_SERVICE = '0xE237f26fB5242FE8887184BcBeaA866B31E2F1Bb';
+const SIMPLE_MONITORING_SERVICE = '0x9699b0b659FBbFf0FC15cE01F98E76dee5880550';
 const ONE = ethers.utils.parseEther('1');
 const MIN_ONE = ethers.utils.parseEther('-1');
 const WEEKLY_FEE = ethers.utils.parseEther('0.01');

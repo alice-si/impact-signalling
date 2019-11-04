@@ -11,20 +11,20 @@
           <md-table>
             <md-table-row>
               <md-table-head md-numeric>ID</md-table-head>
-              <md-table-head>Token</md-table-head>
+              <md-table-head>Market</md-table-head>
               <md-table-head>Condition</md-table-head>
               <md-table-head>Price</md-table-head>
               <md-table-head>Email</md-table-head>
             </md-table-row>
 
             <!-- TODO add rows with monitoring requests  -->
-            <!-- <md-table-row v-for="(market, index) in this.$store.state.gnosis.markets" :key="market.outcome">
-              <md-table-cell md-numeric>{{index + 1}}</md-table-cell>
-              <md-table-cell>{{market.project}}</md-table-cell>
-              <md-table-cell>{{market.outcome}}</md-table-cell>
-              <md-table-cell>{{market.address}}</md-table-cell>
-              <md-table-cell>{{market.ratio}}%</md-table-cell>
-            </md-table-row> -->
+            <md-table-row v-for="(request, index) in this.$store.state.gnosis.monitoringRequests" :key="index">
+              <md-table-cell md-numeric>{{ request.id }}</md-table-cell>
+              <md-table-cell>{{ request.market }}</md-table-cell>
+              <md-table-cell>{{ request.condition }}</md-table-cell>
+              <md-table-cell>{{ request.price }}</md-table-cell>
+              <md-table-cell>{{ request.email }}</md-table-cell>
+            </md-table-row>
           </md-table>
 
           <div class="button-space">
@@ -118,6 +118,7 @@
     methods: {
       addMonitoringRequest: async function () {
         this.showAddPanel = true;
+        console.log(this.$store.state);
       },
       sendAdditionTx: function () {
         let newMonitoringRequest = {
