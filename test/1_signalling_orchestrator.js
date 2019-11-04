@@ -26,9 +26,19 @@ contract('Signalling Orchestrator', function ([owner, oracle, investor, trader])
     return null;
   }
 
+  step("should deploy market maker factory", async function () {
+    let fixedMath = await FixedMath.new();
+    console.log("Fixed math: " + fixedMath.address);
+    await MMFactory.link("Fixed192x64Math", fixedMath.address);
+    factory = await MMFactory.new();
+    //Old way
+    // await so.setMarketMakerFactory(factory.address);
+    // console.log("Factory: " + factory.address);
+  });
+
 
   step("should deploy orchestrator", async function () {
-    so = await SignallingOrchestrator.new(oracle, {gas: 10000000});
+    so = await SignallingOrchestrator.new(oracle, factory.address, {gas: 10000000});
     let receipt = await web3.eth.getTransactionReceipt(so.transactionHash);
     console.log("Gas: " + receipt.gasUsed);
     so.should.not.null;
@@ -37,14 +47,7 @@ contract('Signalling Orchestrator', function ([owner, oracle, investor, trader])
   });
 
 
-  step("should connect market maker factory", async function () {
-    let fixedMath = await FixedMath.new();
-    console.log("Fixed math: " + fixedMath.address);
-    await MMFactory.link("Fixed192x64Math", fixedMath.address);
-    factory = await MMFactory.new();
-    await so.setMarketMakerFactory(factory.address);
-    console.log("Factory: " + factory.address);
-  });
+
 
   step("should create a market", async function () {
     let tx = await so.createMarket(utils.formatBytes32String("Kuba"), HUNDRED);
