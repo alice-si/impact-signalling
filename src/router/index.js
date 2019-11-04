@@ -4,6 +4,7 @@ import Home from '@/pages/Home'
 import Admin from '@/pages/Admin'
 import Users from '@/pages/Users'
 import Markets from '@/pages/Markets'
+import Monitor from '@/pages/Monitor'
 import Trade from '@/pages/Trade'
 
 Vue.use(Router);
@@ -28,7 +29,7 @@ export default new Router({
     {
       path: "/monitor",
       name: "Monitor",
-      component: Admin
+      component: Monitor
     },
     {
       path: "/trade",

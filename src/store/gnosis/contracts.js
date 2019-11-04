@@ -2,11 +2,13 @@ import CONDITIONAL_TOKENS_JSON from '@gnosis-contracts/conditional-tokens-contra
 import WHITELIST_JSON from '@contracts//Whitelist.json'
 import ORCHESTRATOR_JSON from '@contracts/SignallingOrchestrator.json'
 import MM_JSON from '@contracts/MarketMaker.json'
+import SMS_JSON from '@contracts/SimpleMonitoringService.json'
 import COLLATERAL_JSON from '@contracts/CollateralToken.json'
 const ethers = require('ethers');
 
 //FIXME: Please replace with your own deployed MarketMakerFactory
-const MARKET_MAKER_FACTORY = '0xd246B8580F223291E5ae75B875fde0640bf321cf';
+const MARKET_MAKER_FACTORY = '0x51dFBCafd854C2Bbf7083543E6F0b0054Cf32478';
+const SIMPLE_MONITORING_SERVICE = '0x9699b0b659FBbFf0FC15cE01F98E76dee5880550';
 
 import {
   MSGS,
@@ -20,9 +22,13 @@ import {
 var commit, state;
 var orchestrator, collateral, whitelist, conditionalTokens;
 
+const GNOSIS_PROTOCOL = 0;
+const EMAIL_MESSAGE_TYPE = 0;
+
 const ONE = ethers.utils.parseEther("1");
 const MIN_ONE = ethers.utils.parseEther("-1");
 const HUNDRED = ethers.utils.parseEther("100");
+const BI_WEEKLY_FEE = ethers.utils.parseEther("0.02");
 
 export async function deployOrchestrator() {
   let wallet = await getWallet();
@@ -106,6 +112,81 @@ export async function trade(market, order) {
   await updateBalance();
 }
 
+async function getSMSContract() {
+  let wallet = await getWallet();
+  let sms = new ethers.Contract(SIMPLE_MONITORING_SERVICE, SMS_JSON.abi, wallet);
+  return sms;
+}
+
+// TODO implement this function later to allow user select from different service providers
+// export async function getMonitoringServiceProviders() {
+  // let sms = await getSMSContract();
+  // return await sms.
+// }
+
+// TODO check if it works correctly
+// TODO maybe try to find more readable ways to
+function getCondition({ condition }) {
+  // We don't use EQUAL codnition
+  if (condition == 'GREATER_THAN') {
+    return 0;
+  } else {
+    return 2; // LESS_THAN
+  }
+}
+
+function getConditionText(num) {
+  if (num == 0) {
+    return 'GREATER_THAN';
+  }
+  if (num == 1) {
+    return 'EQUAL';
+  }
+  if (num == 2) {
+    return 'LESS_THAN';
+  }
+}
+
+// newRequest should have field "value" which should contain integer number
+export async function createNewMonitoringRequest(newRequest) {
+  // Currently sms contract has no interface for
+  // getting service providers details
+  let serviceProviderId = 0; // <- FIXME: now it is hardcoded
+
+  let sms = await getSMSContract();
+  await sms.registerMonitoringRequest(
+    GNOSIS_PROTOCOL,
+    newRequest.targetAddress,
+    "price", getCondition(newRequest), newRequest.value,
+    EMAIL_MESSAGE_TYPE, newRequest.email,
+    serviceProviderId, {
+      value: BI_WEEKLY_FEE
+    });
+
+  await updateMonitoringRequests();
+}
+
+async function updateMonitoringRequests() {
+  state.monitoringRequests = await getMonitoringRequests();
+}
+
+async function getMonitoringRequests() {
+  let sms = await getSMSContract();
+  let requestsCount = await sms.getRequestsCount();
+  let requests = [];
+  for (let requestId = 0; requestId < requestsCount; requestId++) {
+    let reqDetails = await sms.getRequestDetails(requestId);
+    requests.push({
+      id: requestId,
+      condition: getConditionText(reqDetails[3]),
+      price: reqDetails[4].toNumber() / 100,
+      email: reqDetails[6],
+      market: reqDetails[1],
+    });
+  }
+  return requests;
+}
+
 export async function mintTokens(amount) {
   let wei = ethers.utils.parseEther(amount.toString());
   let wallet = await getWallet();
@@ -178,6 +259,7 @@ var linkContracts = async function() {
       state.users = JSON.parse(localStorage.users);
     }
 
+    // Markets
     if (localStorage.markets) {
       console.log(localStorage.markets);
       state.markets = JSON.parse(localStorage.markets);
@@ -187,6 +269,9 @@ var linkContracts = async function() {
         commit('updateMarket', market);
       });
     }
+
+    // Monitoring requests
+    await updateMonitoringRequests();
 
     await updateBalance();
 

@@ -10,7 +10,8 @@ const state = () => ({
   conditionalTokensAddress: null,
   collateralBalance: 0,
   users: [],
-  markets: []
+  markets: [],
+  monitoringRequests: [],
 });
 
 export default {

@@ -20,6 +20,9 @@ export default {
   addMarket: function (state, newMarket) {
     state.markets.push(newMarket);
   },
+  // addMonitoringRequest: function (state, newMonitoringRequest) {
+  //   state.monitoringRequests.push(newMonitoringRequest);
+  // },
   collateralBalance: function (state, value) {
     state.collateralBalance = value;
   },

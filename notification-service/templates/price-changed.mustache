@@ -1,0 +1,38 @@
+<head>
+  <style>
+    table,td,td,th {
+      border: 1px solid black;
+    }
+    td,th {
+      padding: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <h3>Token: {{ token }}</h3>
+
+  <a href="http://localhost:8080/#/trade">
+    <h3>Go to trade panel</h3>
+  </a>
+
+  <h4>See current prices below</h4>
+
+  <table>
+    <tr>
+      <th></th>
+      <th>Yes</th>
+      <th>No</th>
+    </tr>
+    <tr>
+      <td>Buy</td>
+      <td>{{ curPrices.costBuyYes }}</td>
+      <td>{{ curPrices.costBuyNo }}</td>
+    </tr>
+    <tr>
+      <td>Sell</td>
+      <td>{{ curPrices.costSellYes }}</td>
+      <td>{{ curPrices.costSellNo }}</td>
+    </tr>
+  </table>
+</body>
