@@ -27,6 +27,8 @@
           <md-card-expand-content>
             <md-card-content style="text-align:center;">
 
+              <PriceChart :market="market" />
+
               <div style="margin-left:50px;">
                 <div style="float: left">
                   <md-button class="buy-sell" @click="buyNo(market)"> Buy @ {{market.costBuyNo}}</md-button>
@@ -75,12 +77,17 @@
   import {
     updateMarket
   } from '../store/gnosis/contracts';
+  import PriceChart from '../components/PriceChart';
 
   const ONE = ethers.utils.parseEther("1");
   const MIN_ONE = ethers.utils.parseEther("-1");
 
   export default {
     name: 'Trade',
+
+    components: {
+      PriceChart,
+    },
 
     data: () => ({
       newMarket: {},

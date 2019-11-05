@@ -112,6 +112,27 @@ export async function trade(market, order) {
   await updateBalance();
 }
 
+export async function listenOnPriceChanges(market, onPriceChangedCallback) {
+  function convertPriceToNumber(price) {
+    return Number.parseFloat(ethers.utils.formatEther(price)).toPrecision(3);
+  }
+
+  let provider = getProvider();
+  provider.resetEventsBlock(0); // <- it allows to get all events
+  let mm = new ethers.Contract(market.address, MM_JSON.abi, provider);
+  let filter = mm.filters.AMMPriceChanged();
+  mm.on(filter, (priceBuyYes, priceSellYes, priceBuyNo, priceSellNo, timestamp) => {
+    console.log('AMMPriceChanged, calling onPriceChangedCallback...');
+    onPriceChangedCallback({
+      priceBuyYes: +convertPriceToNumber(priceBuyYes),
+      priceSellYes: -convertPriceToNumber(priceSellYes),
+      priceBuyNo: +convertPriceToNumber(priceBuyNo),
+      priceSellNo: -convertPriceToNumber(priceSellNo),
+      timestamp: timestamp.toNumber(),
+    });
+  });
+}
+
 async function getSMSContract() {
   let wallet = await getWallet();
   let sms = new ethers.Contract(SIMPLE_MONITORING_SERVICE, SMS_JSON.abi, wallet);

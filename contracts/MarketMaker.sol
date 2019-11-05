@@ -27,6 +27,7 @@ contract MarketMaker is Ownable, ERC1155TokenReceiver {
     event AMMFeeChanged(uint64 newFee);
     event AMMFeeWithdrawal(uint fees);
     event AMMOutcomeTokenTrade(address indexed transactor, int[] outcomeTokenAmounts, int outcomeTokenNetCost, uint marketFees);
+    event AMMPriceChanged(int priceBuyYes, int priceSellYes, int priceBuyNo, int priceSellNo, uint timestamp);
 
     /*
      *  Storage
@@ -213,6 +214,28 @@ contract MarketMaker is Ownable, ERC1155TokenReceiver {
         }
 
         emit AMMOutcomeTokenTrade(msg.sender, outcomeTokenAmounts, outcomeTokenNetCost, uint(fees));
+
+        // TODO alex check if we can make this code shorter and cleaner
+        // Emitting custom event for being able to track price history
+        int[] memory arr = new int[](2);
+
+        arr[0] = 1 ether;
+        arr[1] = 0;
+        int priceBuyYes = calcNetCost(arr);
+
+        arr[0] = -1 ether;
+        arr[1] = 0;
+        int priceSellYes = calcNetCost(arr);
+
+        arr[0] = 0;
+        arr[1] = 1 ether;
+        int priceBuyNo = calcNetCost(arr);
+
+        arr[0] = 0;
+        arr[1] = -1 ether;
+        int priceSellNo = calcNetCost(arr);
+
+        emit AMMPriceChanged(priceBuyYes, priceSellYes, priceBuyNo, priceSellNo, block.timestamp);
     }
 
     /// @dev Calculates fee to be paid to market maker

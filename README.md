@@ -29,6 +29,11 @@ truffle migrate --network local
 yarn dev
 ```
 
+## Tests
+``` bash
+truffle test --network local
+```
+
 ## Build Setup
 
 ``` bash
