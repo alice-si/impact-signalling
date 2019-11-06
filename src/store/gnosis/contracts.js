@@ -178,7 +178,7 @@ export async function createNewMonitoringRequest(newRequest) {
   await sms.registerMonitoringRequest(
     GNOSIS_PROTOCOL,
     newRequest.targetAddress,
-    "price", getCondition(newRequest), newRequest.value,
+    newRequest.variable, getCondition(newRequest), newRequest.value,
     EMAIL_MESSAGE_TYPE, newRequest.email,
     serviceProviderId, {
       value: BI_WEEKLY_FEE
@@ -200,9 +200,10 @@ async function getMonitoringRequests() {
     requests.push({
       id: requestId,
       condition: getConditionText(reqDetails[3]),
-      price: reqDetails[4].toNumber() / 100,
+      price: reqDetails[4].toNumber() / 1000000,
       email: reqDetails[6],
       market: reqDetails[1],
+      variable: reqDetails[2],
     });
   }
   return requests;

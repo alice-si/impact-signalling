@@ -50,11 +50,11 @@ function shortenAddress(address) {
   return address.slice(0, maxLen) + '...';
 }
 
-async function sendPriceChangedNotificationByEmail(to, token, curPrices) {
+async function sendPriceChangedNotificationByEmail(to, token, curPrices, requestId) {
   let subject = `Price for ${shortenAddress(token)} has been changed:`
    + ` ${curPrices.costBuyYes}(buy), ${curPrices.costSellYes}(sell)`;
   let template = await fs.readFileAsync(templateDir + 'price-changed.mustache', 'utf8');
-  let html = mustache.render(template, { token, curPrices });
+  let html = mustache.render(template, { token, curPrices, requestId });
   await send({
     to,
     subject,

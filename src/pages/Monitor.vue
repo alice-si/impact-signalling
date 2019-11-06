@@ -12,15 +12,16 @@
             <md-table-row>
               <md-table-head md-numeric>ID</md-table-head>
               <md-table-head>Market</md-table-head>
+              <md-table-head>Variable</md-table-head>
               <md-table-head>Condition</md-table-head>
               <md-table-head>Price</md-table-head>
               <md-table-head>Email</md-table-head>
             </md-table-row>
 
-            <!-- TODO add rows with monitoring requests  -->
             <md-table-row v-for="(request, index) in this.$store.state.gnosis.monitoringRequests" :key="index">
               <md-table-cell md-numeric>{{ request.id }}</md-table-cell>
               <md-table-cell>{{ request.market }}</md-table-cell>
+              <md-table-cell>{{ request.variable }}</md-table-cell>
               <md-table-cell>{{ request.condition }}</md-table-cell>
               <md-table-cell>{{ request.price }}</md-table-cell>
               <md-table-cell>{{ request.email }}</md-table-cell>
@@ -44,10 +45,21 @@
       <div class="form">
         <div class="md-layout-item md-small-size-100">
           <md-field>
-            <label for="project">Market</label>
+            <label for="market">Market</label>
             <md-select v-model="selectedMarket" name="market" id="market">
               <md-option v-for="(market, index) in this.$store.state.gnosis.markets" :value="market.address" :key="index">
                 {{ market.address }}
+              </md-option>
+            </md-select>
+          </md-field>
+        </div>
+
+        <div class="md-layout-item md-small-size-100">
+          <md-field>
+            <label for="variable">Variable</label>
+            <md-select v-model="selectedVariable" name="variable" id="variable">
+              <md-option v-for="variable in variables" :value="variable" :key="variable">
+                {{ variable }}
               </md-option>
             </md-select>
           </md-field>
@@ -107,11 +119,18 @@
       sending: false,
       selectedMarket: null,
       selectedCondition: null,
+      selectedVariable: 'BUY_YES',
       value: 0,
       email: 'alex@alice.si',
       conditions: [
         'GREATER_THAN',
         'LESS_THAN',
+      ],
+      variables: [
+        'BUY_YES',
+        'SELL_YES',
+        'BUY_NO',
+        'SELL_NO'
       ]
     }),
 
@@ -123,8 +142,9 @@
       sendAdditionTx: function () {
         let newMonitoringRequest = {
           targetAddress: this.selectedMarket,
+          variable: this.selectedVariable,
           condition: this.selectedCondition,
-          value: Math.round(this.value * 100),
+          value: Math.round(this.value * 1000000), // we divide it by 1000000 in monitoring-service code
           email: this.email,
         };
         this.$store.dispatch('gnosis/addMonitoringRequest', Object.assign(newMonitoringRequest));
@@ -152,7 +172,7 @@
     width: 400px;
     max-width: calc(100vw - 125px);
     border: 1px solid gray;
-    height: 450px;
+    height: 500px;
   }
 
   .form {

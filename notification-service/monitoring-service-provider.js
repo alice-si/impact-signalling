@@ -24,18 +24,24 @@ const monitoringRequest = {
   }
 }
 
-// TODO
-// Current version of SimpleMonitoringService doesn't allow to
-// pass information about price type, so we use
-// costSellYes for GREATER_THAN condition and
-// costBuyYes for LESS_THAN condition
 function isConditionFulfilled(condition, curPrices) {
+  const priceKeys = {
+    'BUY_YES': 'costBuyYes',
+    'SELL_YES': 'costSellYes',
+    'BUY_NO': 'costBuyNo',
+    'SELL_NO': 'costSellNo',
+  };
+
+  const priceKey = priceKeys[condition.variable];
+  const price = curPrices[priceKey];
+
   if (condition.type == CONDITION_TYPES.GREATER_THAN) {
-    return curPrices.costSellYes > condition.price;
+    return price > condition.price;
   }
   if (condition.type == CONDITION_TYPES.LESS_THAN) {
-    return curPrices.costBuyYes < condition.price;
+    return price < condition.price;
   }
+
   return false;
 }
 
@@ -73,7 +79,8 @@ function runNotifier(monitoringRequestId, mmContractAddress, condition, emailTo)
       await sendPriceChangedNotificationByEmail(
         emailTo,
         mmContractAddress,
-        curPrices);
+        curPrices,
+        monitoringRequestId);
     } else {
       notifierLog('Condition is not fulfilled. Skipping.');
     }

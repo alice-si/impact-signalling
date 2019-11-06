@@ -67,7 +67,8 @@ async function getMonitoringRequestDetails(requestId) {
     emailTo: requestDetails[6],
     condition: {
       type: requestDetails[3],
-      price: requestDetails[4].toNumber() / 100,
+      variable: requestDetails[2],
+      price: requestDetails[4].toNumber() / 1000000,
     }
   };
 }
