@@ -1,5 +1,7 @@
 const SignallingOrchestrator = artifacts.require("SignallingOrchestrator");
 const CollateralToken = artifacts.require("CollateralToken");
+const ConditionalTokens = artifacts.require("ConditionalTokens");
+const Whitelist = artifacts.require("Whitelist");
 const MarketMaker = artifacts.require("MarketMaker");
 const FixedMath = artifacts.require("Fixed192x64Math");
 const MMFactory = artifacts.require("LMSRMarketMakerFactory");
@@ -38,7 +40,10 @@ contract('Signalling Orchestrator', function ([owner, oracle, investor, trader])
 
 
   step("should deploy orchestrator", async function () {
-    so = await SignallingOrchestrator.new(oracle, factory.address, {gas: 10000000});
+    var collateralToken = await CollateralToken.new();
+    var conditionalTokens = await ConditionalTokens.new();
+    var whitelist = await Whitelist.new();
+    so = await SignallingOrchestrator.new(oracle, factory.address, collateralToken.address, conditionalTokens.address, whitelist.address, {gas: 10000000});
     let receipt = await web3.eth.getTransactionReceipt(so.transactionHash);
     console.log("Gas: " + receipt.gasUsed);
     so.should.not.null;
@@ -46,14 +51,23 @@ contract('Signalling Orchestrator', function ([owner, oracle, investor, trader])
     collateral = await CollateralToken.at(collateralAddress);
   });
 
-
-
-
   step("should create a market", async function () {
-    let tx = await so.createMarket(utils.formatBytes32String("Kuba"), HUNDRED);
+    let tx = await so.createMarket(utils.formatBytes32String("Kuba"), HUNDRED, "project", "outcome");
     let marketId = getMarketIdFromTx(tx);
     mm = await MarketMaker.at(marketId);
     console.log("Market id: " + marketId);
+  });
+
+  step("should get markets count", async function () {
+    let count = await so.getMarketsCount();
+    count.toNumber().should.be.equal(1);
+  });
+
+  step("should get market details", async function () {
+    const [address, project, outcome] = await so.getMarketDetails(0);
+    project.should.be.equal("project");
+    outcome.should.be.equal("outcome");
+    address.should.be.equal(mm.address);
   });
 
   step("should get position ID", async function () {
@@ -73,8 +87,4 @@ contract('Signalling Orchestrator', function ([owner, oracle, investor, trader])
     await collateral.approve(mm.address, HUNDRED, {from: trader});
     await mm.trade([ONE, 0], 0, {from: trader});
   });
-
-
-
-
 });

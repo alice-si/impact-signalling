@@ -7,8 +7,11 @@ import COLLATERAL_JSON from '@contracts/CollateralToken.json'
 const ethers = require('ethers');
 
 //FIXME: Please replace with your own deployed MarketMakerFactory
-const MARKET_MAKER_FACTORY = '0x51dFBCafd854C2Bbf7083543E6F0b0054Cf32478';
+const MARKET_MAKER_FACTORY = '0xb3aa8024f572b50cD7EB861A09D13b36357fceB0';
+const CONDITIONAL_TOKENS = '0xf0C75fd0aC4FeC913d03FC0132f623ae37d0DcF2';
 const SIMPLE_MONITORING_SERVICE = '0x9699b0b659FBbFf0FC15cE01F98E76dee5880550';
+
+const DEFAULT_RATIO = 50;
 
 import {
   MSGS,
@@ -34,7 +37,7 @@ export async function deployOrchestrator() {
   let wallet = await getWallet();
   let address = await wallet.getAddress();
   let factory = new ethers.ContractFactory(ORCHESTRATOR_JSON.abi, ORCHESTRATOR_JSON.bytecode, wallet);
-  orchestrator = await factory.deploy(address, MARKET_MAKER_FACTORY);
+  orchestrator = await factory.deploy(address, MARKET_MAKER_FACTORY, CONDITIONAL_TOKENS);
 
   //Update local storage
   localStorage.orchestratorAddress = orchestrator.address;
@@ -56,11 +59,11 @@ export async function onBoardUser(newUser) {
 export async function createMarket(newMarket) {
   let wallet = await getWallet();
   newMarket.id = ethers.utils.id(newMarket.project+newMarket.outcome);
-  let tx = await orchestrator.createMarket(newMarket.id, HUNDRED, {gasLimit: 1000000});
+  let tx = await orchestrator.createMarket(newMarket.id, HUNDRED, newMarket.project, newMarket.outcome, {gasLimit: 2000000});
 
   let receipt = await getProvider().getTransactionReceipt(tx.hash);
   newMarket.address = getMarketIdFromTx(receipt);
-  newMarket.ratio = 50;
+  newMarket.ratio = DEFAULT_RATIO;
 
   let mm = new ethers.Contract(newMarket.address, MM_JSON.abi, wallet);
   newMarket.yesPosition  = await mm.generateAtomicPositionId(0);
@@ -71,6 +74,54 @@ export async function createMarket(newMarket) {
   commit('addMarket', newMarket);
   console.log("Adderd market: " + newMarket.address);
   localStorage.markets = JSON.stringify(state.markets);
+  await updateMarkets();
+}
+
+export async function getMarkets() {
+  let wallet = await getWallet();
+  let walletAddress = await wallet.getAddress();
+  // TODO think about sending orchestratorAddress after deployment
+  let orchestrator = new ethers.Contract(localStorage.orchestratorAddress, ORCHESTRATOR_JSON.abi, wallet);
+  let marketsCount = await orchestrator.getMarketsCount();
+  let collateralAddress = await orchestrator.collateralToken();
+  let collateral = new ethers.Contract(collateralAddress, COLLATERAL_JSON.abi, wallet);
+  let markets = [];
+  for (let marketNr = 0; marketNr < marketsCount; marketNr++) {
+    let [address, project, outcome] = await orchestrator.getMarketDetails(marketNr);
+    let mm = new ethers.Contract(address, MM_JSON.abi, wallet);
+    let allowance = await collateral.allowance(walletAddress, address);
+    let yesPosition = await mm.generateAtomicPositionId(0);
+    let noPosition = await mm.generateAtomicPositionId(1);
+    let market = {
+      // Details
+      address,
+      project,
+      outcome,
+      ratio: DEFAULT_RATIO,
+
+      allowance: ethers.utils.formatEther(allowance),
+
+      // Prices
+      costBuyYes: Number.parseFloat(ethers.utils.formatEther(await mm.calcNetCost([ONE, 0]))).toPrecision(3),
+      costSellYes: (-Number.parseFloat(ethers.utils.formatEther(await mm.calcNetCost([MIN_ONE, 0])))).toPrecision(3),
+      costBuyNo: Number.parseFloat(ethers.utils.formatEther(await mm.calcNetCost([0, ONE]))).toPrecision(3),
+      costSellNo: (-Number.parseFloat(ethers.utils.formatEther(await mm.calcNetCost([0, MIN_ONE])))).toPrecision(3),
+
+      // Position Ids
+      yesPosition,
+      noPosition,
+
+      // Holdings
+      yesBalance: ethers.utils.formatEther(await orchestrator.getOutcomeBalance(walletAddress, yesPosition)),
+      noBalance: ethers.utils.formatEther(await orchestrator.getOutcomeBalance(walletAddress, noPosition)),
+    };
+    markets.push(market);
+  }
+  return JSON.parse(JSON.stringify(markets));
+}
+
+async function updateMarkets() {
+  state.markets = await getMarkets();
 }
 
 export async function updateMarket(market) {
@@ -109,7 +160,7 @@ export async function trade(market, order) {
   await mm.trade(order, 0, {gasLimit: 1000000});
   console.log("Traded on : " + market.address);
   await updateMarket(market);
-  await updateBalance();
+  // await updateBalance();
 }
 
 export async function listenOnPriceChanges(market, onPriceChangedCallback) {
@@ -251,6 +302,8 @@ var linkContracts = async function() {
   let wallet = await getWallet();
   let address = await wallet.getAddress();
 
+  await updateMarkets();
+
   if (localStorage.orchestratorAddress) {
     //Orchestrator
     orchestrator = new ethers.Contract(localStorage.orchestratorAddress, ORCHESTRATOR_JSON.abi, wallet);
@@ -282,15 +335,16 @@ var linkContracts = async function() {
     }
 
     // Markets
-    if (localStorage.markets) {
-      console.log(localStorage.markets);
-      state.markets = JSON.parse(localStorage.markets);
-      state.markets.forEach(async (market) => {
-        let allowance = await collateral.allowance(address, market.address);
-        market.allowance = ethers.utils.formatEther(allowance);
-        commit('updateMarket', market);
-      });
-    }
+    // if (localStorage.markets) {
+    //   console.log(localStorage.markets);
+    //   state.markets = JSON.parse(localStorage.markets);
+    //   state.markets.forEach(async (market) => {
+    //     let allowance = await collateral.allowance(address, market.address);
+    //     market.allowance = ethers.utils.formatEther(allowance);
+    //     commit('updateMarket', market);
+    //   });
+    // }
+    // await updateMarkets();
 
     // Monitoring requests
     await updateMonitoringRequests();

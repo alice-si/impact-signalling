@@ -21,6 +21,8 @@ truffle migrate --network local
 
 ### get address of LMSRMarketMakerFactory contract from deployment output and replace it in src/store/gnosis/contracts.js
 
+### get address of ConditionalTokens contract from deployment output and replace it in src/store/gnosis/contracts.js
+
 ### get address of SimpleMonitoringService from deployment output and replace it in notification-service/contracts.js and src/store/gnosis/contracts.js
 
 ###################################
