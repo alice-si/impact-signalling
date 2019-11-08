@@ -7,10 +7,13 @@ import COLLATERAL_JSON from '@contracts/CollateralToken.json'
 const ethers = require('ethers');
 
 //FIXME: Please replace with your own deployed MarketMakerFactory
-const MARKET_MAKER_FACTORY = '0xb3aa8024f572b50cD7EB861A09D13b36357fceB0';
-const CONDITIONAL_TOKENS = '0xf0C75fd0aC4FeC913d03FC0132f623ae37d0DcF2';
-const SIMPLE_MONITORING_SERVICE = '0x9699b0b659FBbFf0FC15cE01F98E76dee5880550';
+// const MARKET_MAKER_FACTORY = '0xb3aa8024f572b50cD7EB861A09D13b36357fceB0';
+// const CONDITIONAL_TOKENS = '0xf0C75fd0aC4FeC913d03FC0132f623ae37d0DcF2';
 
+//FIXME: Please replace with your own deployed SignallingOrchestrator
+const SIGNALLING_ORCHESTRATOR = '0x9699b0b659FBbFf0FC15cE01F98E76dee5880550';
+//FIXME: Please replace with your own deployed SimpleMonitoringService
+const SIMPLE_MONITORING_SERVICE = '0x06d697924290ed00547D47D4B33112a684e54a48';
 const DEFAULT_RATIO = 50;
 
 import {
@@ -23,7 +26,7 @@ import {
 } from '../ethers/ethersConnect';
 
 var commit, state;
-var orchestrator, collateral, whitelist, conditionalTokens;
+var orchestrator, collateral, whitelist, conditionalTokens, marketMakerFactoryAddress;
 
 const GNOSIS_PROTOCOL = 0;
 const EMAIL_MESSAGE_TYPE = 0;
@@ -33,20 +36,21 @@ const MIN_ONE = ethers.utils.parseEther("-1");
 const HUNDRED = ethers.utils.parseEther("100");
 const BI_WEEKLY_FEE = ethers.utils.parseEther("0.02");
 
-export async function deployOrchestrator() {
-  let wallet = await getWallet();
-  let address = await wallet.getAddress();
-  let factory = new ethers.ContractFactory(ORCHESTRATOR_JSON.abi, ORCHESTRATOR_JSON.bytecode, wallet);
-  orchestrator = await factory.deploy(address, MARKET_MAKER_FACTORY, CONDITIONAL_TOKENS);
+// NOT USED (because we moved orchestrator deployment to truffle migrations)
+// export async function deployOrchestrator() {
+//   let wallet = await getWallet();
+//   let address = await wallet.getAddress();
+//   let factory = new ethers.ContractFactory(ORCHESTRATOR_JSON.abi, ORCHESTRATOR_JSON.bytecode, wallet);
+//   orchestrator = await factory.deploy(address, MARKET_MAKER_FACTORY, CONDITIONAL_TOKENS);
 
-  //Update local storage
-  localStorage.orchestratorAddress = orchestrator.address;
-  localStorage.users = [];
-  localStorage.markets = [];
+//   //Update local storage
+//   localStorage.orchestratorAddress = orchestrator.address;
+//   localStorage.users = [];
+//   localStorage.markets = [];
 
-  commit('orchestratorAddress', orchestrator.address);
-  console.log("Signalling Orchestrator deployed to: " + orchestrator.address);
-}
+//   commit('orchestratorAddress', orchestrator.address);
+//   console.log("Signalling Orchestrator deployed to: " + orchestrator.address);
+// }
 
 export async function onBoardUser(newUser) {
   let wei = ethers.utils.parseEther(newUser.tokens.toString());
@@ -54,6 +58,7 @@ export async function onBoardUser(newUser) {
   commit('addUser', newUser);
   console.log("Added new user: " + newUser.address);
   localStorage.users = JSON.stringify(state.users);
+  await updateBalance();
 }
 
 export async function createMarket(newMarket) {
@@ -80,8 +85,7 @@ export async function createMarket(newMarket) {
 export async function getMarkets() {
   let wallet = await getWallet();
   let walletAddress = await wallet.getAddress();
-  // TODO think about sending orchestratorAddress after deployment
-  let orchestrator = new ethers.Contract(localStorage.orchestratorAddress, ORCHESTRATOR_JSON.abi, wallet);
+  let orchestrator = new ethers.Contract(SIGNALLING_ORCHESTRATOR, ORCHESTRATOR_JSON.abi, wallet);
   let marketsCount = await orchestrator.getMarketsCount();
   let collateralAddress = await orchestrator.collateralToken();
   let collateral = new ethers.Contract(collateralAddress, COLLATERAL_JSON.abi, wallet);
@@ -290,7 +294,7 @@ var updateBalance = async function() {
 var getMarketIdFromTx = function(tx) {
   console.log(tx);
   for(var i=0; i < tx.logs.length; i++) {
-    if (tx.logs[i].address === MARKET_MAKER_FACTORY) {
+    if (tx.logs[i].address === marketMakerFactoryAddress) {
       let id = '0x' + tx.logs[i].data.substring(26, 66);
       return id;
     }
@@ -302,37 +306,66 @@ var linkContracts = async function() {
   let wallet = await getWallet();
   let address = await wallet.getAddress();
 
+  orchestrator = new ethers.Contract(SIGNALLING_ORCHESTRATOR, ORCHESTRATOR_JSON.abi, wallet);  
+  commit('orchestratorAddress', orchestrator.address);
+  console.log("Signalling Orchestrator linked: " + orchestrator.address);
+
+  let collateralAddress = await orchestrator.collateralToken();
+  collateral = new ethers.Contract(collateralAddress, COLLATERAL_JSON.abi, wallet);
+  commit('collateralAddress', collateral.address);
+  console.log("Collateral token linked: " + collateral.address);
+
+  let whitelistAddress = await orchestrator.whitelist();
+  whitelist = new ethers.Contract(whitelistAddress, WHITELIST_JSON.abi, wallet);
+  commit('whitelistAddress', whitelist.address);
+  console.log("Whitelist linked: " + whitelist.address);
+
+  let conditionalTokensAddress = await orchestrator.conditionalTokens();
+  conditionalTokens = new ethers.Contract(conditionalTokensAddress, CONDITIONAL_TOKENS_JSON.abi, wallet);
+  commit('conditionalTokensAddress', conditionalTokens.address);
+  console.log("Conditional Tokens linked: " + conditionalTokens.address);
+
+  marketMakerFactoryAddress = await orchestrator.marketMakerFactory();
+
+  // Monitoring requests
+  await updateMonitoringRequests();
+  await updateBalance();
   await updateMarkets();
 
-  if (localStorage.orchestratorAddress) {
+  if (localStorage.users) {
+    console.log(localStorage.users);
+    state.users = JSON.parse(localStorage.users);
+  }
+
+  // if (localStorage.orchestratorAddress) {
     //Orchestrator
-    orchestrator = new ethers.Contract(localStorage.orchestratorAddress, ORCHESTRATOR_JSON.abi, wallet);
-    commit('orchestratorAddress', orchestrator.address);
-    console.log("Signalling Orchestrator linked: " + orchestrator.address);
+    // orchestrator = new ethers.Contract(localStorage.orchestratorAddress, ORCHESTRATOR_JSON.abi, wallet);
+    // commit('orchestratorAddress', orchestrator.address);
+    // console.log("Signalling Orchestrator linked: " + orchestrator.address);
 
     //Collateral
-    let collateralAddress = await orchestrator.collateralToken();
-    collateral = new ethers.Contract(collateralAddress, COLLATERAL_JSON.abi, wallet);
-    commit('collateralAddress', collateral.address);
-    console.log("Collateral token linked: " + collateral.address);
+    // let collateralAddress = await orchestrator.collateralToken();
+    // collateral = new ethers.Contract(collateralAddress, COLLATERAL_JSON.abi, wallet);
+    // commit('collateralAddress', collateral.address);
+    // console.log("Collateral token linked: " + collateral.address);
 
     //Witelist
-    let whitelistAddress = await orchestrator.whitelist();
-    whitelist = new ethers.Contract(whitelistAddress, WHITELIST_JSON.abi, wallet);
-    commit('whitelistAddress', whitelist.address);
-    console.log("Whitelist linked: " + whitelist.address);
+    // let whitelistAddress = await orchestrator.whitelist();
+    // whitelist = new ethers.Contract(whitelistAddress, WHITELIST_JSON.abi, wallet);
+    // commit('whitelistAddress', whitelist.address);
+    // console.log("Whitelist linked: " + whitelist.address);
 
     //ConditionalTokens
-    let conditionalTokensAddress = await orchestrator.conditionalTokens();
-    conditionalTokens = new ethers.Contract(conditionalTokensAddress, CONDITIONAL_TOKENS_JSON.abi, wallet);
-    commit('conditionalTokensAddress', conditionalTokens.address);
-    console.log("Conditional Tokens linked: " + conditionalTokens.address);
+    // let conditionalTokensAddress = await orchestrator.conditionalTokens();
+    // conditionalTokens = new ethers.Contract(conditionalTokensAddress, CONDITIONAL_TOKENS_JSON.abi, wallet);
+    // commit('conditionalTokensAddress', conditionalTokens.address);
+    // console.log("Conditional Tokens linked: " + conditionalTokens.address);
 
     //Users
-    if (localStorage.users) {
-      console.log(localStorage.users);
-      state.users = JSON.parse(localStorage.users);
-    }
+    // if (localStorage.users) {
+    //   console.log(localStorage.users);
+    //   state.users = JSON.parse(localStorage.users);
+    // }
 
     // Markets
     // if (localStorage.markets) {
@@ -346,12 +379,12 @@ var linkContracts = async function() {
     // }
     // await updateMarkets();
 
-    // Monitoring requests
-    await updateMonitoringRequests();
+    // // Monitoring requests
+    // await updateMonitoringRequests();
 
-    await updateBalance();
+    // await updateBalance();
 
-  }
+  // }
 
 
 }

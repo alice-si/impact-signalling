@@ -6,8 +6,10 @@
     </md-card-header>
     <md-card-content>
 
+      <p>This view is not currently used, because we moved orchestrator deployment into truffle migrations!</p>
 
-      <md-table>
+
+      <!-- <md-table>
         <md-table-row>
           <md-table-head md-numeric>ID</md-table-head>
           <md-table-head>Contract</md-table-head>
@@ -44,7 +46,7 @@
           <md-table-cell>{{this.$store.state.gnosis.conditionalTokensAddress}}</md-table-cell>
         </md-table-row>
 
-      </md-table>
+      </md-table> -->
 
     </md-card-content>
   </md-card>

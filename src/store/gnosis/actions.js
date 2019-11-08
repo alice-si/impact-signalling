@@ -15,7 +15,8 @@ export default {
   },
 
   async deployOrchestrator(ctx) {
-    await deployOrchestrator();
+    throw new Error('We have disabled this feature');
+    // await deployOrchestrator();
   },
 
   async addUser(ctx, newUser) {

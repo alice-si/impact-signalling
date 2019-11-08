@@ -20,7 +20,7 @@ contract SignallingOrchestrator is Ownable {
     ConditionalTokens public conditionalTokens;
     Whitelist public whitelist;
     CollateralToken public collateralToken;
-    LMSRMarketMakerFactory marketMakerFactory;
+    LMSRMarketMakerFactory public marketMakerFactory;
     address public oracle;
     MarketDetails[] public markets;
 

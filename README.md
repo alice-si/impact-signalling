@@ -19,9 +19,7 @@ truffle migrate --network local
 
 ############ IMPORTANT ############
 
-### get address of LMSRMarketMakerFactory contract from deployment output and replace it in src/store/gnosis/contracts.js
-
-### get address of ConditionalTokens contract from deployment output and replace it in src/store/gnosis/contracts.js
+### get address of signallingOrchestrator contract from deployment output and replace it in src/store/gnosis/contracts.js
 
 ### get address of SimpleMonitoringService from deployment output and replace it in notification-service/contracts.js and src/store/gnosis/contracts.js
 
@@ -29,6 +27,10 @@ truffle migrate --network local
 
 # serve with hot reload at localhost:8080
 yarn dev
+
+# Note, that without notification service you will not be able to add monitoring requests in the web app
+# To run monitoring and notification service in a separate terminal tab:
+node notification-service/monitoring-service-provider.js 
 ```
 
 ## Tests
