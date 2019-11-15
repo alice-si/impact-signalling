@@ -27,14 +27,14 @@ export default new Router({
       component: Markets
     },
     {
-      path: "/monitor",
-      name: "Monitor",
-      component: Monitor
-    },
-    {
       path: "/trade",
       name: "Trade",
       component: Trade
+    },
+    {
+      path: "/monitor",
+      name: "Monitor",
+      component: Monitor
     },
     {
       path: "/admin",

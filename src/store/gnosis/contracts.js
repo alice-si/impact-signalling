@@ -6,14 +6,11 @@ import SMS_JSON from '@contracts/SimpleMonitoringService.json'
 import COLLATERAL_JSON from '@contracts/CollateralToken.json'
 const ethers = require('ethers');
 
-//FIXME: Please replace with your own deployed MarketMakerFactory
-// const MARKET_MAKER_FACTORY = '0xb3aa8024f572b50cD7EB861A09D13b36357fceB0';
-// const CONDITIONAL_TOKENS = '0xf0C75fd0aC4FeC913d03FC0132f623ae37d0DcF2';
 
 //FIXME: Please replace with your own deployed SignallingOrchestrator
-const SIGNALLING_ORCHESTRATOR = '0x9699b0b659FBbFf0FC15cE01F98E76dee5880550';
+const SIGNALLING_ORCHESTRATOR = '0x7409Ca2100F15e60cc00ce3bdB698a6E5a8a4e9D';
 //FIXME: Please replace with your own deployed SimpleMonitoringService
-const SIMPLE_MONITORING_SERVICE = '0x06d697924290ed00547D47D4B33112a684e54a48';
+const SIMPLE_MONITORING_SERVICE = '0x938EE98BE77F371806fD6D884417D6E62ffbf79a';
 const DEFAULT_RATIO = 50;
 
 import {
@@ -306,7 +303,7 @@ var linkContracts = async function() {
   let wallet = await getWallet();
   let address = await wallet.getAddress();
 
-  orchestrator = new ethers.Contract(SIGNALLING_ORCHESTRATOR, ORCHESTRATOR_JSON.abi, wallet);  
+  orchestrator = new ethers.Contract(SIGNALLING_ORCHESTRATOR, ORCHESTRATOR_JSON.abi, wallet);
   commit('orchestratorAddress', orchestrator.address);
   console.log("Signalling Orchestrator linked: " + orchestrator.address);
 

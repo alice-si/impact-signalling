@@ -3,8 +3,8 @@
     <md-content>
       <md-card>
         <md-card-header>
-          <div class="md-title">Active Markets</div>
-          <div class="md-subhead">on which users can signal the changes of success</div>
+          <div class="md-title">Market creator</div>
+          <div class="md-subhead">deploy a Gnosis prediction market based on a project form the Alice platform</div>
         </md-card-header>
         <md-card-content>
 
@@ -14,7 +14,6 @@
               <md-table-head>Project</md-table-head>
               <md-table-head>Outcome</md-table-head>
               <md-table-head>Address</md-table-head>
-              <md-table-head>Ratio</md-table-head>
             </md-table-row>
 
             <md-table-row v-for="(market, index) in this.$store.state.gnosis.markets" :key="market.outcome">
@@ -22,7 +21,6 @@
               <md-table-cell>{{market.project}}</md-table-cell>
               <md-table-cell>{{market.outcome}}</md-table-cell>
               <md-table-cell>{{market.address}}</md-table-cell>
-              <md-table-cell>{{market.ratio}}%</md-table-cell>
             </md-table-row>
           </md-table>
 

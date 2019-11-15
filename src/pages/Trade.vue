@@ -1,6 +1,11 @@
 <template>
   <div class="page-container">
     <md-content>
+      <div class="md-card" style="box-shadow: none">
+        <div class="md-title">Active Markets</div>
+        <div class="md-subhead">on which users can signal the changes of success</div>
+      </div>
+
       <md-card v-for="(market, index) in this.$store.state.gnosis.markets" :key="market.outcome">
         <md-card-content>
 
