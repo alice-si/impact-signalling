@@ -12,7 +12,7 @@ yarn install
 truffle compile
 
 # run ganache
-ganache-cli --gasLimit 10000000 --mnemonic "spoon uncle park ritual alarm journey matter water apart warrior weird soap"
+ganache-cli --gasLimit 10000000 --host 0.0.0.0 --mnemonic "spoon uncle park ritual alarm journey matter water apart warrior weird soap"
 
 # deploy MarketMakerFactory contract
 truffle migrate --network local

@@ -1,7 +1,7 @@
 const ethers = require('ethers');
 const MM_JSON = require('../build/contracts/MarketMaker.json');
 const SMS_JSON = require('../build/contracts/SimpleMonitoringService.json');
-const { mnemonic } = require('./secrets');
+const { mnemonic } = require('../secrets');
 
 // FIXME: replace with deployed SIMPLE_MONITORING_SERVICE_ADDRESS
 const SIMPLE_MONITORING_SERVICE = '0x06d697924290ed00547D47D4B33112a684e54a48';

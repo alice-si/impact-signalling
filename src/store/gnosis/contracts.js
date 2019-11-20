@@ -63,7 +63,7 @@ export async function onBoardUser(newUser) {
 
 export async function createMarket(newMarket) {
   let wallet = await getWallet();
-  newMarket.id = ethers.utils.id(newMarket.project+newMarket.outcome);
+  newMarket.id = ethers.utils.id(newMarket.project + newMarket.outcome + Date.now());
   let tx = await orchestrator.createMarket(newMarket.id, HUNDRED, newMarket.project, newMarket.outcome, {gasLimit: 2000000});
 
   let receipt = await getProvider().getTransactionReceipt(tx.hash);

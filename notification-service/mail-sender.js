@@ -1,4 +1,4 @@
-const secrets = require('./secrets');
+const secrets = require('../secrets');
 // aws will automatically load credentials from env variables:
 // AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
 const aws = require('aws-sdk');
