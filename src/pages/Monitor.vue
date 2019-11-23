@@ -121,7 +121,7 @@
       selectedCondition: null,
       selectedVariable: 'BUY_YES',
       value: 0,
-      email: 'alex@alice.si',
+      email: null,
       conditions: [
         'GREATER_THAN',
         'LESS_THAN',

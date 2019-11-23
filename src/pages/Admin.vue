@@ -6,10 +6,10 @@
     </md-card-header>
     <md-card-content>
 
-      <p>This view is not currently used, because we moved orchestrator deployment into truffle migrations!</p>
+      <!--<p>This view is not currently used, because we moved orchestrator deployment into truffle migrations!</p>-->
 
 
-      <!-- <md-table>
+      <md-table>
         <md-table-row>
           <md-table-head md-numeric>ID</md-table-head>
           <md-table-head>Contract</md-table-head>
@@ -22,9 +22,9 @@
           <md-table-cell>Signalling orchestrator</md-table-cell>
           <md-table-cell>{{this.$store.state.gnosis.orchestratorAddress}}</md-table-cell>
           <md-table-cell>
-            <md-button class="md-icon-button md-dense md-primary md-raised" v-on:click="deployOrchestrator()">
-              <md-icon>cloud_upload</md-icon>
-            </md-button>
+            <!--<md-button class="md-icon-button md-dense md-primary md-raised" v-on:click="deployOrchestrator()">-->
+              <!--<md-icon>cloud_upload</md-icon>-->
+            <!--</md-button>-->
           </md-table-cell>
         </md-table-row>
 
@@ -46,7 +46,7 @@
           <md-table-cell>{{this.$store.state.gnosis.conditionalTokensAddress}}</md-table-cell>
         </md-table-row>
 
-      </md-table> -->
+      </md-table>
 
     </md-card-content>
   </md-card>
