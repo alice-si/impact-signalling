@@ -12,8 +12,10 @@ const WEEKLY_FEE = ethers.utils.parseEther('0.01');
 function getProvider() {
   // Think about updating it for production
   // let defaultProvider = ethers.getDefaultProvider('rinkeby');
-  let httpProvider = new ethers.providers.JsonRpcProvider();
-  return httpProvider;
+  // let httpProvider = new ethers.providers.JsonRpcProvider();
+  // return httpProvider;
+
+  return ethers.getDefaultProvider('rinkeby');
 }
 
 function getWallet() {

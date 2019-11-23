@@ -12,8 +12,11 @@ const DEFAULT_TOKENS_AMOUNT = ethers.utils.parseEther('10');
 function getProvider() {
   // Think about updating it for production
   // let defaultProvider = ethers.getDefaultProvider('rinkeby');
-  let httpProvider = new ethers.providers.JsonRpcProvider();
-  return httpProvider;
+  // let httpProvider = new ethers.providers.JsonRpcProvider();
+  // return httpProvider;
+
+  // Rinkeby
+  return ethers.getDefaultProvider('rinkeby');
 }
 
 function getWallet() {

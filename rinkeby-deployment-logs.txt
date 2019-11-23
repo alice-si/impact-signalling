@@ -1,0 +1,261 @@
+Alexs-MacBook-Pro-4:impact-signalling alex$ truffle migrate --network rinkeby
+
+Compiling your contracts...
+===========================
+> Everything is up to date, there is nothing to compile.
+
+
+Migrations dry-run (simulation)
+===============================
+> Network name:    'rinkeby-fork'
+> Network id:      4
+> Block gas limit: 0x989680
+
+
+1_initial_migration.js
+======================
+
+   Deploying 'Migrations'
+   ----------------------
+   > block number:        5490979
+   > block timestamp:     1574503844
+   > account:             0x6Cb6334f3fc8Dc2b8e04311f7897D427FA96325A
+   > balance:             2.109761076
+   > gas used:            258034
+   > gas price:           10 gwei
+   > value sent:          0 ETH
+   > total cost:          0.00258034 ETH
+
+   -------------------------------------
+   > Total cost:          0.00258034 ETH
+
+
+2_signalling_orchestrator.js
+============================
+
+   Deploying 'Fixed192x64Math'
+   ---------------------------
+   > block number:        5490981
+   > block timestamp:     1574503852
+   > account:             0x6Cb6334f3fc8Dc2b8e04311f7897D427FA96325A
+   > balance:             2.098665516
+   > gas used:            1082528
+   > gas price:           10 gwei
+   > value sent:          0 ETH
+   > total cost:          0.01082528 ETH
+
+
+   Linking
+   -------
+   * Contract: LMSRMarketMakerFactory <--> Library: Fixed192x64Math 
+
+   Deploying 'LMSRMarketMakerFactory'
+   ----------------------------------
+   > block number:        5490982
+   > block timestamp:     1574503868
+   > account:             0x6Cb6334f3fc8Dc2b8e04311f7897D427FA96325A
+   > balance:             2.032052116
+   > gas used:            6661340
+   > gas price:           10 gwei
+   > value sent:          0 ETH
+   > total cost:          0.0666134 ETH
+
+
+   Deploying 'ConditionalTokens'
+   -----------------------------
+   > block number:        5490983
+   > block timestamp:     1574503881
+   > account:             0x6Cb6334f3fc8Dc2b8e04311f7897D427FA96325A
+   > balance:             1.975617756
+   > gas used:            5643436
+   > gas price:           10 gwei
+   > value sent:          0 ETH
+   > total cost:          0.05643436 ETH
+
+
+   Deploying 'SignallingOrchestrator'
+   ----------------------------------
+   > block number:        5490984
+   > block timestamp:     1574503923
+   > account:             0x6Cb6334f3fc8Dc2b8e04311f7897D427FA96325A
+   > balance:             1.928143726
+   > gas used:            4747403
+   > gas price:           10 gwei
+   > value sent:          0 ETH
+   > total cost:          0.04747403 ETH
+
+   -------------------------------------
+   > Total cost:          0.18134707 ETH
+
+
+3_simple_monitoring_service.js
+==============================
+
+   Deploying 'SimpleMonitoringService'
+   -----------------------------------
+   > block number:        5490986
+   > block timestamp:     1574503945
+   > account:             0x6Cb6334f3fc8Dc2b8e04311f7897D427FA96325A
+   > balance:             1.907477326
+   > gas used:            2039612
+   > gas price:           10 gwei
+   > value sent:          0 ETH
+   > total cost:          0.02039612 ETH
+
+   -------------------------------------
+   > Total cost:          0.02039612 ETH
+
+
+Summary
+=======
+> Total deployments:   6
+> Final cost:          0.20432353 ETH
+
+
+Starting migrations...
+======================
+> Network name:    'rinkeby'
+> Network id:      4
+> Block gas limit: 0x98705c
+
+
+1_initial_migration.js
+======================
+
+   Deploying 'Migrations'
+   ----------------------
+   > transaction hash:    0xbae93e30db62d79472d1eacaa96b6677e36aedeef4b618cf617e49ac8dfb7d15
+   > Blocks: 1            Seconds: 16
+   > contract address:    0xa28E89311B8295D32B73Ad657C3D83c6a1D471D6
+   > block number:        5490987
+   > block timestamp:     1574503969
+   > account:             0x6Cb6334f3fc8Dc2b8e04311f7897D427FA96325A
+   > balance:             2.109991956
+   > gas used:            234946
+   > gas price:           10 gwei
+   > value sent:          0 ETH
+   > total cost:          0.00234946 ETH
+
+
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.00234946 ETH
+
+
+2_signalling_orchestrator.js
+============================
+
+   Deploying 'Fixed192x64Math'
+   ---------------------------
+   > transaction hash:    0xd3304f7905466b7d1a2c235938270e03fc330f22835576aa42455150b509ed63
+   ⠙ Blocks: 0            Seconds: 4Error: Invalid JSON RPC response: ""
+    at Object.InvalidResponse (/Users/alex/alice/impact-signalling/node_modules/truffle-hdwallet-provider/dist/webpack:/truffle-hdwallet-provider/Users/gnidan/src/work/truffle/node_modules/web3/node_modules/web3-core-helpers/src/errors.js:42:1)
+    at t.InvalidResponse [as onreadystatechange] (/Users/alex/alice/impact-signalling/node_modules/truffle-hdwallet-provider/dist/webpack:/truffle-hdwallet-provider/Users/gnidan/src/work/truffle/node_modules/web3/node_modules/web3-providers-http/src/index.js:92:1)
+    at t.call [as dispatchEvent] (/Users/alex/alice/impact-signalling/node_modules/truffle-hdwallet-provider/dist/webpack:/truffle-hdwallet-provider/Users/gnidan/src/work/truffle/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+    at t.dispatchEvent [as _setReadyState] (/Users/alex/alice/impact-signalling/node_modules/truffle-hdwallet-provider/dist/webpack:/truffle-hdwallet-provider/Users/gnidan/src/work/truffle/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+    at t._setReadyState [as _onHttpRequestError] (/Users/alex/alice/impact-signalling/node_modules/truffle-hdwallet-provider/dist/webpack:/truffle-hdwallet-provider/Users/gnidan/src/work/truffle/node_modules/xhr2-cookies/dist/xml-http-request.js:349:1)
+    at ClientRequest._onHttpRequestError (/Users/alex/alice/impact-signalling/node_modules/truffle-hdwallet-provider/dist/webpack:/truffle-hdwallet-provider/Users/gnidan/src/work/truffle/node_modules/xhr2-cookies/dist/xml-http-request.js:252:47)
+    at ClientRequest.emit (events.js:189:13)
+    at TLSSocket.socketErrorListener (_http_client.js:392:9)
+    at TLSSocket.emit (events.js:189:13)
+    at emitErrorNT (internal/streams/destroy.js:82:8)
+    at emitErrorAndCloseNT (internal/streams/destroy.js:50:3)
+    at process._tickCallback (internal/process/next_tick.js:63:19)
+   > Blocks: 0            Seconds: 9
+   > contract address:    0xa174eBF5c46A3819aDe908Cc6441E18Fe43e63fC
+   > block number:        5490989
+   > block timestamp:     1574503999
+   > account:             0x6Cb6334f3fc8Dc2b8e04311f7897D427FA96325A
+   > balance:             2.100568716
+   > gas used:            899956
+   > gas price:           10 gwei
+   > value sent:          0 ETH
+   > total cost:          0.00899956 ETH
+
+
+   Linking
+   -------
+   * Contract: LMSRMarketMakerFactory <--> Library: Fixed192x64Math (at address: 0xa174eBF5c46A3819aDe908Cc6441E18Fe43e63fC)
+
+   Deploying 'LMSRMarketMakerFactory'
+   ----------------------------------
+   > transaction hash:    0xf9f677cebaf0a14c91bac442df06d68bb11738ae11cf55cb6e3a2ae616bc68f9
+   > Blocks: 0            Seconds: 8
+   > contract address:    0xE237f26fB5242FE8887184BcBeaA866B31E2F1Bb
+   > block number:        5490990
+   > block timestamp:     1574504014
+   > account:             0x6Cb6334f3fc8Dc2b8e04311f7897D427FA96325A
+   > balance:             2.045327436
+   > gas used:            5524128
+   > gas price:           10 gwei
+   > value sent:          0 ETH
+   > total cost:          0.05524128 ETH
+
+
+   Deploying 'ConditionalTokens'
+   -----------------------------
+   > transaction hash:    0x97fcdef996420e2b75d75c18f8e5390560e00297b0b68fa290d082302bec9918
+   > Blocks: 0            Seconds: 9
+   > contract address:    0xdEe2e8BA05ef0c1916FD008b44321F186b8E1EB8
+   > block number:        5490991
+   > block timestamp:     1574504029
+   > account:             0x6Cb6334f3fc8Dc2b8e04311f7897D427FA96325A
+   > balance:             1.998777236
+   > gas used:            4655020
+   > gas price:           10 gwei
+   > value sent:          0 ETH
+   > total cost:          0.0465502 ETH
+
+
+   Deploying 'SignallingOrchestrator'
+   ----------------------------------
+   > transaction hash:    0x690ee74bbc82416b66d4f908cf8500b43d7bcf3eef508815c05ea4083301c0d3
+   > Blocks: 0            Seconds: 5
+   > contract address:    0x6D2Ed4F01bB9b426fD911F047508588DEc050283
+   > block number:        5490992
+   > block timestamp:     1574504044
+   > account:             0x6Cb6334f3fc8Dc2b8e04311f7897D427FA96325A
+   > balance:             1.958373326
+   > gas used:            4040391
+   > gas price:           10 gwei
+   > value sent:          0 ETH
+   > total cost:          0.04040391 ETH
+
+
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.15119495 ETH
+
+
+3_simple_monitoring_service.js
+==============================
+
+   Deploying 'SimpleMonitoringService'
+   -----------------------------------
+   > transaction hash:    0x5952bf09e0bf4db3d67b989d8275666a13c11790c247e0a4057cecab37d2294e
+   > Blocks: 0            Seconds: 8
+   > contract address:    0xF194D142A47D4c783775AfE86F7d38Ca611Ba490
+   > block number:        5490994
+   > block timestamp:     1574504074
+   > account:             0x6Cb6334f3fc8Dc2b8e04311f7897D427FA96325A
+   > balance:             1.941381486
+   > gas used:            1671816
+   > gas price:           10 gwei
+   > value sent:          0 ETH
+   > total cost:          0.01671816 ETH
+
+
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.01671816 ETH
+
+
+Summary
+=======
+> Total deployments:   6
+> Final cost:          0.17026257 ETH
+
+Alexs-MacBook-Pro-4:impact-signalling alex$ 

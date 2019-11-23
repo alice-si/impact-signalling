@@ -8,9 +8,9 @@ const ethers = require('ethers');
 
 
 //FIXME: Please replace with your own deployed SignallingOrchestrator
-const SIGNALLING_ORCHESTRATOR = '0x7409Ca2100F15e60cc00ce3bdB698a6E5a8a4e9D';
+const SIGNALLING_ORCHESTRATOR = '0x6D2Ed4F01bB9b426fD911F047508588DEc050283';
 //FIXME: Please replace with your own deployed SimpleMonitoringService
-const SIMPLE_MONITORING_SERVICE = '0x938EE98BE77F371806fD6D884417D6E62ffbf79a';
+const SIMPLE_MONITORING_SERVICE = '0xF194D142A47D4c783775AfE86F7d38Ca611Ba490';
 const DEFAULT_RATIO = 50;
 
 import {
