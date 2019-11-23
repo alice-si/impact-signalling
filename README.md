@@ -42,6 +42,12 @@ node faucet/server.js
 truffle test --network local
 ```
 
+## To update app on GH pages
+``` bash
+yarn build
+cp -r public/ docs/
+```
+
 ## Build Setup
 
 ``` bash
