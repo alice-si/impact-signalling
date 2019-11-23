@@ -5,7 +5,7 @@ const { mnemonic } = require('../secrets');
 const ORCHESTRATOR_JSON = require('../build/contracts/SignallingOrchestrator.json');
 
 // FIXME: update signalling orchestrator address
-const SIGNALLING_ORCHESTRATOR = '0x9699b0b659FBbFf0FC15cE01F98E76dee5880550';
+const SIGNALLING_ORCHESTRATOR = '0x6D2Ed4F01bB9b426fD911F047508588DEc050283';
 const DEFAULT_ETHERS_VALUE = ethers.utils.parseEther('0.15');
 const DEFAULT_TOKENS_AMOUNT = ethers.utils.parseEther('10');
 
