@@ -30,7 +30,11 @@ yarn dev
 
 # Note, that without notification service you will not be able to add monitoring requests in the web app
 # To run monitoring and notification service in a separate terminal tab:
-node notification-service/monitoring-service-provider.js 
+node notification-service/monitoring-service-provider.js
+
+# To run eth and collateral token faucet
+node faucet/server.js
+
 ```
 
 ## Tests

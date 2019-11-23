@@ -51,7 +51,7 @@ app.use(cors());
 
 app.get("/api/giveMeEthers/:address/:secretKey", asyncHandler(async (req, res, next) => {
   if (req.params.secretKey !== faucetSecretKey) {
-    return res.status(401);
+    return res.status(401).send();
   }
   let tx = await sendEthersToAddress(req.params.address);
   return res.json({hash: tx.hash});
@@ -59,7 +59,7 @@ app.get("/api/giveMeEthers/:address/:secretKey", asyncHandler(async (req, res, n
 
 app.get("/api/giveMeTokens/:address/:secretKey", asyncHandler(async (req, res, next) => {
   if (req.params.secretKey !== faucetSecretKey) {
-    return res.status(401);
+    return res.status(401).send();
   }
   let tx = await sendTokensToAddress(req.params.address);
   // listenOnTxUpdates(tx, 'tokensRequests');
