@@ -34,6 +34,10 @@
 
               <PriceChart :market="market" />
 
+              <div>If you believe a project will be successful, buy "Yes" tokens and/or sell "No" tokens.
+                Do the opposite if you think it will fail.
+              </div>
+
               <div style="margin-left:50px;">
                 <div style="float: left">
                   <md-button class="buy-sell" @click="buyNo(market)"> Buy @ {{market.costBuyNo}}</md-button>

@@ -123,6 +123,6 @@ export default {
 <style scoped>
 .price-chart {
   height: 300px;
-  margin-bottom: 100px;
+  margin-bottom: 20px;
 }
 </style>
