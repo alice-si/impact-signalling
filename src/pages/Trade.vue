@@ -1,6 +1,14 @@
 <template>
   <div class="page-container">
-    <md-content>
+    <md-content v-if="$store.state.gnosis.collateralBalance == 0 && $store.state.gnosis.balanceLoaded">
+      <div class="warning-notification">
+        WARNING: Please contact project admin at alice@alice.si to get access
+      </div>
+    </md-content>
+    <md-content v-if="!$store.state.gnosis.balanceLoaded">
+      Loading ...
+    </md-content>
+    <md-content v-if="$store.state.gnosis.collateralBalance > 0">
       <div class="md-card" style="box-shadow: none">
         <div class="md-title">Active Markets</div>
         <div class="md-subhead">on which users can signal the changes of success</div>
@@ -9,7 +17,7 @@
       <md-card v-for="(market, index) in this.$store.state.gnosis.markets" :key="market.outcome">
         <md-card-content>
 
-          {{market.project}}
+          {{market.outcome}} | {{market.project}}
 
           <span class="card-buttons">
             <md-card-expand-trigger v-if="market.allowance > 0">

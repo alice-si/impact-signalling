@@ -1,6 +1,14 @@
 <template>
   <div class="page-container">
-    <md-content>
+    <md-content v-if="$store.state.gnosis.collateralBalance == 0 && $store.state.gnosis.balanceLoaded">
+      <div class="warning-notification">
+        WARNING: Please contact project admin at alice@alice.si to get access
+      </div>
+    </md-content>
+    <md-content v-if="!$store.state.gnosis.balanceLoaded">
+      Loading ...
+    </md-content>
+    <md-content v-if="$store.state.gnosis.collateralBalance > 0">
       <md-card>
         <md-card-header>
           <div class="md-title">Monitoring requests</div>
@@ -48,7 +56,7 @@
             <label for="market">Market</label>
             <md-select v-model="selectedMarket" name="market" id="market">
               <md-option v-for="(market, index) in this.$store.state.gnosis.markets" :value="market.address" :key="index">
-                {{ market.address }}
+                {{ market.outcome }} | {{ market.project }}
               </md-option>
             </md-select>
           </md-field>
@@ -183,4 +191,8 @@
     text-align: center;
   }
 
+  .market-address {
+    font-size: 10px;
+    color: gray;
+  }
 </style>

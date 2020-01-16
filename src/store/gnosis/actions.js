@@ -7,6 +7,7 @@ import {
   trade,
   joinMarket,
   createNewMonitoringRequest,
+  // updateMarkets,
 } from './contracts';
 
 export default {
@@ -37,5 +38,9 @@ export default {
 
   async trade(ctx, {market, yesAmount, noAmount}) {
     await trade(market, [yesAmount, noAmount]);
-  }
+  },
+
+  // async updateMarketsAction() {
+  //   await updateMarkets();
+  // }
 }

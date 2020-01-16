@@ -173,7 +173,7 @@ export async function listenOnPriceChanges(market, onPriceChangedCallback) {
   provider.resetEventsBlock(0); // <- it allows to get all events
   let mm = new ethers.Contract(market.address, MM_JSON.abi, provider);
   let filter = mm.filters.AMMPriceChanged();
-  mm.on(filter, (priceBuyYes, priceSellYes, priceBuyNo, priceSellNo, timestamp) => {
+  mm.on(filter, async (priceBuyYes, priceSellYes, priceBuyNo, priceSellNo, timestamp) => {
     console.log('AMMPriceChanged, calling onPriceChangedCallback...');
     onPriceChangedCallback({
       priceBuyYes: +convertPriceToNumber(priceBuyYes),
@@ -182,6 +182,8 @@ export async function listenOnPriceChanges(market, onPriceChangedCallback) {
       priceSellNo: -convertPriceToNumber(priceSellNo),
       timestamp: timestamp.toNumber(),
     });
+    console.log('Calling market update')
+    await updateMarket(market);
   });
 }
 
@@ -286,6 +288,11 @@ var updateBalance = async function() {
 
   let balance = await collateral.balanceOf(address);
   commit('collateralBalance', ethers.utils.formatEther(balance));
+
+  // Also update wallet address
+  commit('myWalletAddress', address);
+
+  commit('balanceLoaded', true);
 };
 
 var getMarketIdFromTx = function(tx) {

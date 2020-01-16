@@ -14,11 +14,12 @@
         <md-tabs class="md-primary" md-sync-route>
           <md-tab v-for="route in $router.options.routes"
                   :key="route.path"
-                  v-if="route.path != '*'"
+                  v-if="route.path != '*' && ($store.state.gnosis.myWalletAddress == ownerAddress || ['Trade', 'Monitor', 'Home'].includes(route.name))"
                   :to="route.path"
 
                   :md-label="route.name"
-          exact>
+                  exact
+          >
 
           </md-tab>
         </md-tabs>
@@ -41,6 +42,14 @@
 
 <script>
   export default {
+    computed: {
+      ownerAddress() {
+        // TODO
+        // Currently it's hardcoded
+        // Later we can get owner's address directly from contracts
+        return '0x6Cb6334f3fc8Dc2b8e04311f7897D427FA96325A';
+      }
+    },
     mounted: function () {
       this.$store.dispatch('gnosis/initContracts');
     }
@@ -59,6 +68,16 @@
 
   .md-toolbar-row {
     width: auto;
+  }
+
+  .warning-notification {
+    background: #f58c00;
+    border-radius: 5px;
+    color: white;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    /* width: 600px; */
   }
 </style>
 

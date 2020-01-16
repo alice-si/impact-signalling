@@ -26,6 +26,12 @@ export default {
   collateralBalance: function (state, value) {
     state.collateralBalance = value;
   },
+  myWalletAddress: function(state, address) {
+    state.myWalletAddress = address;
+  },
+  balanceLoaded: function(state, isLoadingFinished) {
+    state.balanceLoaded = isLoadingFinished;
+  },
   updateMarket: function(state, updatedMarket) {
   state.markets.forEach((market, index) => {
     if (market.address === updatedMarket.address) {
