@@ -187,6 +187,15 @@ export async function listenOnPriceChanges(market, onPriceChangedCallback) {
   });
 }
 
+async function enableLiveUpdateForMonitoringRequests() {
+  let sms = await getSMSContract();
+  let filter = sms.filters.MonitoringRequestAdded();
+  sms.on(filter, () => {
+    console.log('Got event MonitoringRequestAdded: updating monitoring requests...');
+    updateMonitoringRequests();
+  });
+}
+
 async function getSMSContract() {
   let wallet = await getWallet();
   let sms = new ethers.Contract(SIMPLE_MONITORING_SERVICE, SMS_JSON.abi, wallet);
@@ -335,6 +344,7 @@ var linkContracts = async function() {
   await updateMonitoringRequests();
   await updateBalance();
   await updateMarkets();
+  await enableLiveUpdateForMonitoringRequests();
 
   if (localStorage.users) {
     console.log(localStorage.users);
