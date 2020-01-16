@@ -28,7 +28,7 @@
 
             <md-table-row v-for="(request, index) in this.$store.state.gnosis.monitoringRequests" :key="index">
               <md-table-cell md-numeric>{{ request.id }}</md-table-cell>
-              <md-table-cell>{{ request.market }}</md-table-cell>
+              <md-table-cell>{{ getMarketTitle(request.market) }}</md-table-cell>
               <md-table-cell>{{ request.variable }}</md-table-cell>
               <md-table-cell>{{ request.condition }}</md-table-cell>
               <md-table-cell>{{ request.price }}</md-table-cell>
@@ -146,6 +146,15 @@
       addMonitoringRequest: async function () {
         this.showAddPanel = true;
         console.log(this.$store.state);
+      },
+      getMarketTitle: function(address) {
+        if (this.$store.state.gnosis.markets) {
+          let marketFound = this.$store.state.gnosis.markets.find(el => el.address == address);
+          if (marketFound) {
+            return marketFound.outcome + ' | ' + marketFound.project;
+          }
+        }
+        return address;
       },
       sendAdditionTx: function () {
         let newMonitoringRequest = {

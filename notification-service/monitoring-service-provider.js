@@ -54,6 +54,21 @@ function notifierIsDisabled(monitoringRequestId) {
   return !status || status == 'cancelled';
 }
 
+// TODO
+// In future we could fetch information about markets from smart contracts
+// Currently we use hardcoded mapping "marketsTitles"
+function getNiceTokenName(address) {
+  let marketsTitles = {
+    '0xA837648E8E9A93b50Db0bC670c9E46683d3a8026': 'CARE CHECK | Plant the seed of change in South Africa',
+    '0x34Ff635fa22D0D6C3511cBB31A8243811c59cd78': 'PLANT TREES | Plant the seed of change in South Africa',
+  };
+
+  if (marketsTitles[address]) {
+    return marketsTitles[address];
+  }
+  return address;
+}
+
 function runNotifier(monitoringRequestId, mmContractAddress, condition, emailTo) {
   function notifierLog(msg) {
     console.log(`MonitoringRequestId: ${monitoringRequestId}: ${msg}`);
@@ -78,7 +93,7 @@ function runNotifier(monitoringRequestId, mmContractAddress, condition, emailTo)
       notifierLog('Condition is fulfilled. Sending email notification.');
       await sendPriceChangedNotificationByEmail(
         emailTo,
-        mmContractAddress,
+        getNiceTokenName(mmContractAddress),
         curPrices,
         monitoringRequestId);
     } else {
