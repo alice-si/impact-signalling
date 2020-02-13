@@ -1,6 +1,6 @@
 # gnosis-signalling
 
-> Use gnosis prediction market to signal social project performance. 
+> Use gnosis prediction market to signal social project performance. This project was developed with the help of an ECO grant provided by Gnosis. To test a working current implementation of the Android application, please contact alice@alice.si.
 
 ## To develop
 
